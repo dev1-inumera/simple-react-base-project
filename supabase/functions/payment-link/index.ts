@@ -44,14 +44,14 @@ serve(async (req) => {
 
     // 🧱 Construction du payload de la requête vers PAPI
     const requestBody = {
-      change: change || { currency: "EUR", rate: 1 },
+      change: { currency: "EUR", rate: 1 },
       amount: totalAmount,
-      failureUrl: failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
-      successUrl: successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
-      callbackUrl: callbackUrl || `${origin}/payment/callback/${quoteId}`,
+      failureUrl:  `${origin}/payment/failure?quoteId=${quoteId}`,
+      successUrl:  `${origin}/payment/success?quoteId=${quoteId}`,
+      callbackUrl:  `${origin}/payment/callback/${quoteId}`,
       clientEmail: clientEmail,
       paymentDescription: paymentDescription || "Plaquette d'offres",
-      methods: methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
+      methods: ["ORANGE_MONEY", "MVOLA", "VISA"],
       message: message || "Plaquette d'offres"
     };
 
