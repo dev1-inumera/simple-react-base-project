@@ -115,7 +115,20 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
       const response = await createPaymentLink(
         quote.id,
         Number(quote.totalAmount) * 100, // Montant en centimes
-        client.email
+        client.email,
+        {
+          change: {
+            currency: "EUR",
+            rate: 1
+          },
+          paymentDescription: "Plaquette d'offres",
+          methods: [
+            "ORANGE_MONEY",
+            "MVOLA",
+            "VISA"
+          ],
+          message: "Plaquette d'offres"
+        }
       );
       
       if (response?.url) {

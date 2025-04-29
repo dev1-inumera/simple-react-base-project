@@ -15,7 +15,15 @@ serve(async (req) => {
   try {
     // Get the request body
     const requestData = await req.json();
-    const { quoteId, totalAmount, clientEmail } = requestData;
+    const { 
+      quoteId, 
+      totalAmount, 
+      clientEmail,
+      change,
+      paymentDescription,
+      methods,
+      message
+    } = requestData;
 
     if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
@@ -46,7 +54,7 @@ serve(async (req) => {
 
     // Prepare the full payload as required by the payment API
     const paymentPayload = {
-      change: {
+      change: change || {
         currency: "EUR",
         rate: 1
       },
@@ -55,13 +63,13 @@ serve(async (req) => {
       successUrl: `${origin}/payment/success?quoteId=${quoteId}`,
       callbackUrl: `${origin}/payment/callback/${quoteId}`,
       clientEmail: clientEmail,
-      paymentDescription: "Plaquette d'offres",
-      methods: [
+      paymentDescription: paymentDescription || "Plaquette d'offres",
+      methods: methods || [
         "ORANGE_MONEY",
         "MVOLA",
         "VISA"
       ],
-      message: "Plaquette d'offres"
+      message: message || "Plaquette d'offres"
     };
 
     console.log("Full payment payload:", JSON.stringify(paymentPayload, null, 2));

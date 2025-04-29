@@ -292,10 +292,26 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
   }
 };
 
-export const createPaymentLink = async (quoteId: string, totalAmount: number, clientEmail: string) => {
+export const createPaymentLink = async (quoteId: string, totalAmount: number, clientEmail: string, paymentOptions?: {
+  change?: {
+    currency: string;
+    rate: number;
+  };
+  paymentDescription?: string;
+  methods?: string[];
+  message?: string;
+}) => {
   try {
     const { data, error } = await supabase.functions.invoke('payment-link', {
-      body: { quoteId, totalAmount, clientEmail }
+      body: { 
+        quoteId,
+        totalAmount,
+        clientEmail,
+        change: paymentOptions?.change || { currency: "EUR", rate: 1 },
+        paymentDescription: paymentOptions?.paymentDescription || "Plaquette d'offres",
+        methods: paymentOptions?.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
+        message: paymentOptions?.message || "Plaquette d'offres"
+      }
     });
 
     if (error) throw error;
