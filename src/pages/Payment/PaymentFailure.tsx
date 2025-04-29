@@ -25,8 +25,8 @@ const PaymentFailure = () => {
           description: 'Quote payment attempt failed',
           merchantPaymentReference: `MREF-${Date.now()}`,
           paymentReference: `PREF-${Date.now()}`,
-          notificationToken: `TOKEN-${Date.now()}`,
-          quoteId: quoteId
+          notificationToken: `TOKEN-${Date.now()}`
+          // Removed quoteId field
         };
         
         // Send payment notification to our endpoint

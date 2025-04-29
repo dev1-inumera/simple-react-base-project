@@ -34,8 +34,8 @@ const PaymentSuccess = () => {
             description: 'Quote payment',
             merchantPaymentReference: `MREF-${Date.now()}`,
             paymentReference: `PREF-${Date.now()}`,
-            notificationToken: `TOKEN-${Date.now()}`,
-            quoteId: quoteId
+            notificationToken: `TOKEN-${Date.now()}`
+            // Removed quoteId field
           };
           
           await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/payment-notification`, {

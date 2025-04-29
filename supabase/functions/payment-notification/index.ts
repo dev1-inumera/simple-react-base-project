@@ -45,7 +45,7 @@ serve(async (req) => {
       merchantPaymentReference,
       paymentReference,
       notificationToken,
-      quoteId = null
+      quoteId = null  // Make quoteId optional with a default value of null
     } = body;
 
     // Validate required fields
@@ -87,7 +87,7 @@ serve(async (req) => {
         merchant_payment_reference: merchantPaymentReference,
         payment_reference: paymentReference,
         notification_token: notificationToken,
-        quote_id: quoteId,
+        quote_id: quoteId,  // This is now optional and can be null
         processed: false
       });
 
