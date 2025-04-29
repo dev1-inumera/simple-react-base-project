@@ -26,32 +26,40 @@ serve(async (req) => {
       );
     }
 
+    // Log the origin and other parameters for debugging
+    const origin = req.headers.get("origin");
+    console.log("Request origin:", origin);
     console.log("Sending payment link request with params:", { quoteId, totalAmount, clientEmail });
 
-    // Create the payment link - ensuring all parameters are sent
+    // Prepare the full payload as required by the payment API
+    const paymentPayload = {
+      change: {
+        currency: "EUR",
+        rate: 1
+      },
+      amount: totalAmount,
+      failureUrl: `${origin}/payment/failure?quoteId=${quoteId}`,
+      successUrl: `${origin}/payment/success?quoteId=${quoteId}`,
+      callbackUrl: `${origin}/payment/callback/${quoteId}`,
+      clientEmail: clientEmail,
+      paymentDescription: "Plaquette d'offres",
+      methods: [
+        "ORANGE_MONEY",
+        "MVOLA",
+        "VISA"
+      ],
+      message: "Plaquette d'offres"
+    };
+
+    console.log("Full payment payload:", JSON.stringify(paymentPayload, null, 2));
+
+    // Create the payment link with the complete payload
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        change: {
-          currency: "EUR",
-          rate: 1
-        },
-        amount: totalAmount,
-        failureUrl: `${req.headers.get("origin")}/payment/failure?quoteId=${quoteId}`,
-        successUrl: `${req.headers.get("origin")}/payment/success?quoteId=${quoteId}`,
-        callbackUrl: `${req.headers.get("origin")}/payment/callback/${quoteId}`,
-        clientEmail: clientEmail,
-        paymentDescription: "Plaquette d'offres",
-        methods: [
-          "ORANGE_MONEY",
-          "MVOLA",
-          "VISA"
-        ],
-        message: "Plaquette d'offres"
-      }),
+      body: JSON.stringify(paymentPayload),
     });
 
     const data = await response.json();
