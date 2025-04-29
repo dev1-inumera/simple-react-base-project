@@ -294,29 +294,40 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
 
 export const createPaymentLink = async (
   quoteId: string, 
-  totalAmount: number, 
+  amount: number,
   clientEmail: string, 
-  paymentOptions: {
-    change?: {
-      currency: string;
-      rate: number;
-    };
-    amount?: number;
-    failureUrl?: string;
-    successUrl?: string;
-    callbackUrl?: string;
-    paymentDescription?: string;
-    methods?: string[];
-    message?: string;
-  }
+    change: {
+      currency: string,
+      rate: number,
+    },
+    failureUrl: string,
+    successUrl: string,
+    callbackUrl: string,
+    paymentDescription: string,
+    methods: string[],
+    message: string,
 ) => {
   try {
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
         quoteId,
-        totalAmount,
+        amount: totalAmount,
         clientEmail,
-        ...paymentOptions
+        change: {
+          currency: "EUR",
+          rate: 1
+        },
+        failureUrl: ${req.headers.get("origin")}/payment/failure?quoteId=${quoteId},
+        successUrl: ${req.headers.get("origin")}/payment/success?quoteId=${quoteId},
+        callbackUrl: ${req.headers.get("origin")}/payment/callback/${quoteId},
+        clientEmail: clientEmail,
+        paymentDescription: "Plaquette d'offres",
+        methods: [
+          "ORANGE_MONEY",
+          "MVOLA",
+          "VISA"
+        ],
+        message: "Plaquette d'offres"
       }
     });
 
