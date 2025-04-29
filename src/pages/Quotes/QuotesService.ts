@@ -296,7 +296,7 @@ export const createPaymentLink = async (
   quoteId: string, 
   totalAmount: number, 
   clientEmail: string, 
-  paymentOptions?: {
+  paymentOptions: {
     change?: {
       currency: string;
       rate: number;
@@ -316,14 +316,7 @@ export const createPaymentLink = async (
         quoteId,
         totalAmount,
         clientEmail,
-        change: paymentOptions?.change || { currency: "EUR", rate: 1 },
-        amount: paymentOptions?.amount || totalAmount,
-        failureUrl: paymentOptions?.failureUrl,
-        successUrl: paymentOptions?.successUrl,
-        callbackUrl: paymentOptions?.callbackUrl,
-        paymentDescription: paymentOptions?.paymentDescription || "Plaquette d'offres",
-        methods: paymentOptions?.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
-        message: paymentOptions?.message || "Plaquette d'offres"
+        ...paymentOptions
       }
     });
 
