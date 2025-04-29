@@ -1,30 +1,150 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Layout from "./components/layout/Layout";
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from '@/components/AuthProvider';
+import { MainLayout } from '@/components/layout/MainLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { Toaster } from '@/components/ui/toaster';
 
-const queryClient = new QueryClient();
+import Index from '@/pages/Index';
+import Login from '@/pages/Auth/Login';
+import Register from '@/pages/Auth/Register';
+import Dashboard from '@/pages/Dashboard';
+import NotFound from '@/pages/NotFound';
+import Marketplace from '@/pages/Marketplace';
+import Clients from '@/pages/Clients';
+import Folders from '@/pages/Folders';
+import Quotes from '@/pages/Quotes';
+import QuoteDetailPage from '@/pages/Quotes/components/QuoteDetailPage';
+import CartPage from '@/pages/Cart';
+import OfferPlateDetailPage from '@/pages/OfferPlates/OfferPlateDetailPage';
+import Settings from '@/pages/Settings';
+import PaymentSuccess from '@/pages/Payment/PaymentSuccess';
+import PaymentFailure from '@/pages/Payment/PaymentFailure';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+import './App.css';
+
+function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/marketplace"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Marketplace />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Clients />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/folders"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Folders />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quotes"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Quotes />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quotes/:id"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <QuoteDetailPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/offer-plates/:id"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <OfferPlateDetailPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <CartPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Settings />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/success"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <PaymentSuccess />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/failure"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <PaymentFailure />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </AuthProvider>
+  );
+}
 
 export default App;
