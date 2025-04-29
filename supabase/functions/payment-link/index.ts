@@ -26,7 +26,9 @@ serve(async (req) => {
       );
     }
 
-    // Create the payment link
+    console.log("Sending payment link request with params:", { quoteId, totalAmount, clientEmail });
+
+    // Create the payment link - ensuring all parameters are sent
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
@@ -53,6 +55,7 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    console.log("Payment API response:", data);
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
