@@ -14,7 +14,7 @@ serve(async (req) => {
 
   try {
     // Get the request body
-    const { quoteId, totalAmount, clientEmail } = await req.json();
+    const { quoteId, totalAmount, clientEmail, change, paymentDescription, message } = await req.json();
 
     if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
@@ -33,22 +33,19 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        change: {
-          currency: "EUR",
-          rate: 1
-        },
+        change: change || {currency: "EUR",rate: 1},
         amount: totalAmount,
         failureUrl: `${req.headers.get("origin")}/payment/failure?quoteId=${quoteId}`,
         successUrl: `${req.headers.get("origin")}/payment/success?quoteId=${quoteId}`,
         callbackUrl: `${req.headers.get("origin")}/payment/callback/${quoteId}`,
         clientEmail: clientEmail,
-        paymentDescription: "Plaquette d'offres",
+        paymentDescription: paymentDescription || "Plaquette d'offres",
         methods: [
           "ORANGE_MONEY",
           "MVOLA",
           "VISA"
         ],
-        message: "Plaquette d'offres"
+        message: message || "Plaquette d'offres"
       }),
     });
 
