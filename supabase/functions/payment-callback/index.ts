@@ -34,37 +34,6 @@ serve(async (req) => {
       );
     }
 
-    // Get request body content
-    let body;
-    try {
-      body = await req.json();
-      console.log("📄 Request body:", JSON.stringify(body, null, 2));
-    } catch (e) {
-      console.error("❌ Error parsing request body:", e);
-      return new Response(
-        JSON.stringify({ error: "Invalid request body" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    // Check for payment status in request body
-    const status = body?.status;
-    console.log(`💰 Payment status: ${status}`);
-    
-    if (!status) {
-      console.error("❌ No payment status provided in request body");
-      return new Response(
-        JSON.stringify({ error: "Payment status is required" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') as string;
@@ -83,30 +52,25 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     console.log("🔌 Supabase client initialized");
 
-    // Update quote payment status
-    if (status === 'success') {
-      console.log(`✅ Updating quote ${quoteId} payment status to 'Payé'`);
-      const { data, error } = await supabase
-        .from('quotes')
-        .update({ payment_status: 'Payé' })
-        .eq('id', quoteId);
+    // Always update quote payment status to 'Payé'
+    console.log(`✅ Updating quote ${quoteId} payment status to 'Payé'`);
+    const { data, error } = await supabase
+      .from('quotes')
+      .update({ payment_status: 'Payé' })
+      .eq('id', quoteId);
 
-      if (error) {
-        console.error(`❌ Failed to update quote: ${error.message}`);
-        throw new Error(`Failed to update quote: ${error.message}`);
-      }
-      
-      console.log("✅ Quote payment status successfully updated to 'Payé'");
-    } else {
-      console.log(`ℹ️ Payment not successful, status: ${status}`);
+    if (error) {
+      console.error(`❌ Failed to update quote: ${error.message}`);
+      throw new Error(`Failed to update quote: ${error.message}`);
     }
+    
+    console.log("✅ Quote payment status successfully updated to 'Payé'");
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Payment status processed",
-        quoteId,
-        status
+        message: "Payment status updated to Payé",
+        quoteId
       }),
       {
         status: 200,
