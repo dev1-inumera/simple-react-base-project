@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -7,30 +6,30 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
+  // 🔁 Gère les requêtes OPTIONS (pré-vol CORS)
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    // Get the request body
+    // 📥 Lecture du corps de la requête
     const reqBody = await req.json();
-    const { 
-      quoteId, 
-      totalAmount, 
-      clientEmail, 
-      change, 
-      amount, 
-      failureUrl, 
-      successUrl, 
-      callbackUrl, 
-      paymentDescription, 
-      methods, 
-      message 
+    console.log("📨 Données reçues :", JSON.stringify(reqBody, null, 2));
+
+    const {
+      quoteId,
+      totalAmount,
+      clientEmail,
+      change,
+      failureUrl,
+      successUrl,
+      callbackUrl,
+      paymentDescription,
+      methods,
+      message
     } = reqBody;
 
-    console.log("Request received with data:", JSON.stringify(reqBody, null, 2));
-
+    // ❌ Vérif des champs obligatoires
     if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
@@ -42,11 +41,11 @@ serve(async (req) => {
     }
 
     const origin = req.headers.get("origin") || "http://localhost:3000";
-    
-    // Create the payment link request body
+
+    // 🧱 Construction du payload de la requête vers PAPI
     const requestBody = {
       change: change || { currency: "EUR", rate: 1 },
-      amount: amount || totalAmount,
+      amount: totalAmount,
       failureUrl: failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
       successUrl: successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
       callbackUrl: callbackUrl || `${origin}/payment/callback/${quoteId}`,
@@ -56,9 +55,10 @@ serve(async (req) => {
       message: message || "Plaquette d'offres"
     };
 
-    console.log("Sending payment request with body:", JSON.stringify(requestBody, null, 2));
+    // 📝 Log du payload final envoyé à l’API
+    console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
 
-    // Create the payment link
+    // 🔗 Envoi vers l’API PAPI
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
@@ -67,31 +67,24 @@ serve(async (req) => {
       body: JSON.stringify(requestBody),
     });
 
-    console.log("Response status:", response.status);
-    
+    console.log("📡 Statut réponse API:", response.status);
+
+    // 🧾 Lecture du corps brut de la réponse
+    const responseText = await response.text();
+    console.log("📄 Réponse brute de l'API:", responseText);
+
+    // 🧠 Tentative de parse JSON
     let responseData;
     try {
-      const responseText = await response.text();
-      console.log("Raw response:", responseText);
-      try {
-        responseData = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("Failed to parse response as JSON:", parseError);
-        return new Response(
-          JSON.stringify({ 
-            error: "Invalid response from payment API", 
-            details: responseText.substring(0, 200) + "..." 
-          }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
-    } catch (textError) {
-      console.error("Failed to get response text:", textError);
+      responseData = JSON.parse(responseText);
+      console.log("✅ Réponse JSON parsée:", JSON.stringify(responseData, null, 2));
+    } catch (parseError) {
+      console.error("❌ Échec du parse JSON:", parseError);
       return new Response(
-        JSON.stringify({ error: "Failed to read response from payment API" }),
+        JSON.stringify({
+          error: "Invalid response from payment API",
+          details: responseText.substring(0, 200) + "..."
+        }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -102,8 +95,9 @@ serve(async (req) => {
     return new Response(JSON.stringify(responseData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("🔥 Erreur serveur:", error.message);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
