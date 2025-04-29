@@ -121,10 +121,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
             currency: "EUR",
             rate: 1
           },
-          amount: totalAmount,
-          failureUrl: `${window.location.origin}/payment/failure?quoteId=${quote.id}`,
-          successUrl: `${window.location.origin}/payment/success?quoteId=${quote.id}`,
-          callbackUrl: `${window.location.origin}/payment/callback/${quote.id}`,
           paymentDescription: "Plaquette d'offres",
           methods: [
             "ORANGE_MONEY",

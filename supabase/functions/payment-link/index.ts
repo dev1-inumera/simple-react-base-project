@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -20,13 +21,13 @@ serve(async (req) => {
       quoteId,
       totalAmount,
       clientEmail,
-      change,
+      change = { currency: "EUR", rate: 1 },
       failureUrl,
       successUrl,
       callbackUrl,
-      paymentDescription,
-      methods,
-      message
+      paymentDescription = "Plaquette d'offres",
+      methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
+      message = "Plaquette d'offres"
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
@@ -41,24 +42,25 @@ serve(async (req) => {
     }
 
     const origin = req.headers.get("origin") || "http://localhost:3000";
+    const baseUrl = origin.replace(/\/$/, ''); // Remove trailing slash if any
 
     // 🧱 Construction du payload de la requête vers PAPI
     const requestBody = {
-      change: { currency: "EUR", rate: 1 },
+      change: change,
       amount: totalAmount,
-      failureUrl:  `${origin}/payment/failure?quoteId=${quoteId}`,
-      successUrl:  `${origin}/payment/success?quoteId=${quoteId}`,
-      callbackUrl:  `${origin}/payment/callback/${quoteId}`,
+      failureUrl: failureUrl || `${baseUrl}/payment/failure?quoteId=${quoteId}`,
+      successUrl: successUrl || `${baseUrl}/payment/success?quoteId=${quoteId}`,
+      callbackUrl: callbackUrl || `${baseUrl}/payment/callback/${quoteId}`,
       clientEmail: clientEmail,
-      paymentDescription: paymentDescription || "Plaquette d'offres",
-      methods: ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message: message || "Plaquette d'offres"
+      paymentDescription: paymentDescription,
+      methods: methods,
+      message: message
     };
 
-    // 📝 Log du payload final envoyé à l’API
+    // 📝 Log du payload final envoyé à l'API
     console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
 
-    // 🔗 Envoi vers l’API PAPI
+    // 🔗 Envoi vers l'API PAPI
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {

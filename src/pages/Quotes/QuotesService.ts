@@ -295,39 +295,42 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
 export const createPaymentLink = async (
   quoteId: string, 
   amount: number,
-  clientEmail: string, 
-    change: {
+  clientEmail: string,
+  options: {
+    change?: {
       currency: string,
       rate: number,
     },
-    failureUrl: string,
-    successUrl: string,
-    callbackUrl: string,
-    paymentDescription: string,
-    methods: string[],
-    message: string,
+    failureUrl?: string,
+    successUrl?: string,
+    callbackUrl?: string,
+    paymentDescription?: string,
+    methods?: string[],
+    message?: string,
+  } = {}
 ) => {
   try {
+    const origin = window.location.origin;
+    
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
         quoteId,
-        amount: totalAmount,
+        totalAmount: amount,
         clientEmail,
-        change: {
+        change: options.change || {
           currency: "EUR",
           rate: 1
         },
-        failureUrl: ${req.headers.get("origin")}/payment/failure?quoteId=${quoteId},
-        successUrl: ${req.headers.get("origin")}/payment/success?quoteId=${quoteId},
-        callbackUrl: ${req.headers.get("origin")}/payment/callback/${quoteId},
-        clientEmail: clientEmail,
-        paymentDescription: "Plaquette d'offres",
-        methods: [
+        failureUrl: options.failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
+        successUrl: options.successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
+        callbackUrl: options.callbackUrl || `${origin}/payment/callback/${quoteId}`,
+        paymentDescription: options.paymentDescription || "Plaquette d'offres",
+        methods: options.methods || [
           "ORANGE_MONEY",
           "MVOLA",
           "VISA"
         ],
-        message: "Plaquette d'offres"
+        message: options.message || "Plaquette d'offres"
       }
     });
 
