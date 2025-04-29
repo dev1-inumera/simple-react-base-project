@@ -11,8 +11,16 @@ const PaymentFailure = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto py-10 px-4">
-      <Card className="max-w-md mx-auto">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md mx-auto mb-8">
+        <img 
+          src="/images/inum.svg" 
+          alt="i-numa logo" 
+          className="h-14 mx-auto"
+        />
+      </div>
+      
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <XCircle className="h-16 w-16 text-red-500" />
@@ -26,13 +34,20 @@ const PaymentFailure = () => {
           
           <div className="flex flex-col space-y-2">
             {quoteId && (
-              <Button onClick={() => navigate(`/quotes/${quoteId}`)}>
+              <Button 
+                onClick={() => navigate(`/quotes/${quoteId}`)} 
+                className="w-full"
+              >
                 Retourner au devis
               </Button>
             )}
-            <Button variant="outline" onClick={() => navigate('/dashboard')}>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')} 
+              className="w-full"
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour au tableau de bord
+              Retour à l'accueil
             </Button>
           </div>
         </CardContent>

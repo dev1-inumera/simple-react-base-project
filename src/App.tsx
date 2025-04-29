@@ -120,26 +120,11 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/payment/success"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <PaymentSuccess />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/payment/failure"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <PaymentFailure />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
+        
+        {/* Payment pages accessible to anyone without authentication */}
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failure" element={<PaymentFailure />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
