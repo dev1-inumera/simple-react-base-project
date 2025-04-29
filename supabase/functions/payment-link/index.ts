@@ -14,7 +14,22 @@ serve(async (req) => {
 
   try {
     // Get the request body
-    const { quoteId, totalAmount, clientEmail, change, paymentDescription, message } = await req.json();
+    const reqBody = await req.json();
+    const { 
+      quoteId, 
+      totalAmount, 
+      clientEmail, 
+      change, 
+      amount, 
+      failureUrl, 
+      successUrl, 
+      callbackUrl, 
+      paymentDescription, 
+      methods, 
+      message 
+    } = reqBody;
+
+    console.log("Request received with data:", JSON.stringify(reqBody, null, 2));
 
     if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
@@ -26,32 +41,65 @@ serve(async (req) => {
       );
     }
 
+    const origin = req.headers.get("origin") || "http://localhost:3000";
+    
+    // Create the payment link request body
+    const requestBody = {
+      change: change || { currency: "EUR", rate: 1 },
+      amount: amount || totalAmount,
+      failureUrl: failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
+      successUrl: successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
+      callbackUrl: callbackUrl || `${origin}/payment/callback/${quoteId}`,
+      clientEmail: clientEmail,
+      paymentDescription: paymentDescription || "Plaquette d'offres",
+      methods: methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
+      message: message || "Plaquette d'offres"
+    };
+
+    console.log("Sending payment request with body:", JSON.stringify(requestBody, null, 2));
+
     // Create the payment link
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        change: change || {currency: "EUR",rate: 1},
-        amount: totalAmount,
-        failureUrl: `${req.headers.get("origin")}/payment/failure?quoteId=${quoteId}`,
-        successUrl: `${req.headers.get("origin")}/payment/success?quoteId=${quoteId}`,
-        callbackUrl: `${req.headers.get("origin")}/payment/callback/${quoteId}`,
-        clientEmail: clientEmail,
-        paymentDescription: paymentDescription || "Plaquette d'offres",
-        methods: [
-          "ORANGE_MONEY",
-          "MVOLA",
-          "VISA"
-        ],
-        message: message || "Plaquette d'offres"
-      }),
+      body: JSON.stringify(requestBody),
     });
 
-    const data = await response.json();
+    console.log("Response status:", response.status);
+    
+    let responseData;
+    try {
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Failed to parse response as JSON:", parseError);
+        return new Response(
+          JSON.stringify({ 
+            error: "Invalid response from payment API", 
+            details: responseText.substring(0, 200) + "..." 
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+    } catch (textError) {
+      console.error("Failed to get response text:", textError);
+      return new Response(
+        JSON.stringify({ error: "Failed to read response from payment API" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify(responseData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

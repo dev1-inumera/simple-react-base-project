@@ -292,15 +292,24 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
   }
 };
 
-export const createPaymentLink = async (quoteId: string, totalAmount: number, clientEmail: string, paymentOptions?: {
-  change?: {
-    currency: string;
-    rate: number;
-  };
-  paymentDescription?: string;
-  methods?: string[];
-  message?: string;
-}) => {
+export const createPaymentLink = async (
+  quoteId: string, 
+  totalAmount: number, 
+  clientEmail: string, 
+  paymentOptions?: {
+    change?: {
+      currency: string;
+      rate: number;
+    };
+    amount?: number;
+    failureUrl?: string;
+    successUrl?: string;
+    callbackUrl?: string;
+    paymentDescription?: string;
+    methods?: string[];
+    message?: string;
+  }
+) => {
   try {
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
@@ -308,6 +317,10 @@ export const createPaymentLink = async (quoteId: string, totalAmount: number, cl
         totalAmount,
         clientEmail,
         change: paymentOptions?.change || { currency: "EUR", rate: 1 },
+        amount: paymentOptions?.amount || totalAmount,
+        failureUrl: paymentOptions?.failureUrl,
+        successUrl: paymentOptions?.successUrl,
+        callbackUrl: paymentOptions?.callbackUrl,
         paymentDescription: paymentOptions?.paymentDescription || "Plaquette d'offres",
         methods: paymentOptions?.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
         message: paymentOptions?.message || "Plaquette d'offres"

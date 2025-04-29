@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,22 +117,23 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
         quote.id,
         Number(quote.totalAmount) * 100, // Montant en centimes
         client.email,
-        change: {
-          currency: "EUR",
-          rate: 1
-        },
-        amount: totalAmount,
-        failureUrl: `${req.headers.get("origin")}/payment/failure?quoteId=${quoteId}`,
-        successUrl: `${req.headers.get("origin")}/payment/success?quoteId=${quoteId}`,
-        callbackUrl: `${req.headers.get("origin")}/payment/callback/${quoteId}`,
-        clientEmail: clientEmail,
-        paymentDescription: "Plaquette d'offres",
-        methods: [
-          "ORANGE_MONEY",
-          "MVOLA",
-          "VISA"
-        ],
-        message: "Plaquette d'offres"
+        {
+          change: {
+            currency: "EUR",
+            rate: 1
+          },
+          amount: totalAmount,
+          failureUrl: `${window.location.origin}/payment/failure?quoteId=${quote.id}`,
+          successUrl: `${window.location.origin}/payment/success?quoteId=${quote.id}`,
+          callbackUrl: `${window.location.origin}/payment/callback/${quote.id}`,
+          paymentDescription: "Plaquette d'offres",
+          methods: [
+            "ORANGE_MONEY",
+            "MVOLA",
+            "VISA"
+          ],
+          message: "Plaquette d'offres"
+        }
       );
       
       if (response?.url) {
