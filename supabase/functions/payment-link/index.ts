@@ -14,7 +14,8 @@ serve(async (req) => {
 
   try {
     // Get the request body
-    const { quoteId, totalAmount, clientEmail } = await req.json();
+    const requestData = await req.json();
+    const { quoteId, totalAmount, clientEmail } = requestData;
 
     if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
@@ -29,7 +30,19 @@ serve(async (req) => {
     // Log the origin and other parameters for debugging
     const origin = req.headers.get("origin");
     console.log("Request origin:", origin);
-    console.log("Sending payment link request with params:", { quoteId, totalAmount, clientEmail });
+    console.log("Request data received:", JSON.stringify(requestData, null, 2));
+
+    // Ensure we have a valid origin
+    if (!origin) {
+      console.error("No origin in request headers");
+      return new Response(
+        JSON.stringify({ error: "Origin header is required" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     // Prepare the full payload as required by the payment API
     const paymentPayload = {
@@ -58,12 +71,38 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify(paymentPayload),
     });
 
+    // Check if the response is valid JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      console.error("Non-JSON response received:", await response.text());
+      return new Response(
+        JSON.stringify({ error: "Invalid response from payment API" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const data = await response.json();
     console.log("Payment API response:", data);
+
+    // Check if the response indicates an error
+    if (!response.ok) {
+      console.error("Error from payment API:", data);
+      return new Response(
+        JSON.stringify({ error: data.message || "Payment API error" }),
+        {
+          status: response.status,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
