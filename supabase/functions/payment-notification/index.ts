@@ -15,8 +15,25 @@ serve(async (req) => {
 
   try {
     // Get request body
-    const body = await req.json();
-    console.log("Payment notification received:", body);
+    let body;
+    try {
+      // Safely parse JSON with error handling
+      const text = await req.text();
+      body = JSON.parse(text);
+      console.log("Payment notification received:", body);
+    } catch (parseError) {
+      console.error("JSON parsing error:", parseError);
+      return new Response(
+        JSON.stringify({
+          error: `Invalid JSON format: ${parseError.message}`,
+          hint: "Please check that your JSON is properly formatted and valid."
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     const {
       paymentStatus,

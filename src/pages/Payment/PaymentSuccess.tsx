@@ -24,23 +24,26 @@ const PaymentSuccess = () => {
         
         // Send payment notification to our endpoint
         try {
+          // Prepare payment notification data
+          const notificationData = {
+            paymentStatus: 'SUCCESS',
+            paymentMethod: 'ONLINE_PAYMENT',
+            amount: 0, // This would ideally come from the payment provider
+            fee: 0,    // This would ideally come from the payment provider
+            clientName: 'Client', // This would ideally come from the payment provider
+            description: 'Quote payment',
+            merchantPaymentReference: `MREF-${Date.now()}`,
+            paymentReference: `PREF-${Date.now()}`,
+            notificationToken: `TOKEN-${Date.now()}`,
+            quoteId: quoteId
+          };
+          
           await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/payment-notification`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              paymentStatus: 'SUCCESS',
-              paymentMethod: 'ONLINE_PAYMENT',
-              amount: 0, // This would ideally come from the payment provider
-              fee: 0,    // This would ideally come from the payment provider
-              clientName: 'Client', // This would ideally come from the payment provider
-              description: 'Quote payment',
-              merchantPaymentReference: `MREF-${Date.now()}`,
-              paymentReference: `PREF-${Date.now()}`,
-              notificationToken: `TOKEN-${Date.now()}`,
-              quoteId: quoteId
-            })
+            body: JSON.stringify(notificationData)
           });
         } catch (notificationError) {
           console.error("Error sending payment notification:", notificationError);
