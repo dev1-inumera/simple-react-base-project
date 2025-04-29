@@ -20,6 +20,8 @@ import OfferPlateDetailPage from '@/pages/OfferPlates/OfferPlateDetailPage';
 import Settings from '@/pages/Settings';
 import PaymentSuccess from '@/pages/Payment/PaymentSuccess';
 import PaymentFailure from '@/pages/Payment/PaymentFailure';
+import PaymentHistory from '@/pages/Admin/PaymentHistory';
+import { UserRole } from '@/types';
 
 import './App.css';
 
@@ -116,6 +118,18 @@ function App() {
             <ProtectedRoute>
               <MainLayout>
                 <Settings />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Admin only routes */}
+        <Route
+          path="/admin/payment-history"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
+              <MainLayout>
+                <PaymentHistory />
               </MainLayout>
             </ProtectedRoute>
           }

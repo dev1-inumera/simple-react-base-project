@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,38 @@ const PaymentFailure = () => {
   const [searchParams] = useSearchParams();
   const quoteId = searchParams.get('quoteId');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const sendFailureNotification = async () => {
+      if (!quoteId) return;
+      
+      try {
+        // Send payment notification to our endpoint
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/payment-notification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentStatus: 'FAILED',
+            paymentMethod: 'ONLINE_PAYMENT',
+            amount: 0, // This would ideally come from the payment provider
+            fee: 0,    // This would ideally come from the payment provider
+            clientName: 'Client', // This would ideally come from the payment provider
+            description: 'Quote payment attempt failed',
+            merchantPaymentReference: `MREF-${Date.now()}`,
+            paymentReference: `PREF-${Date.now()}`,
+            notificationToken: `TOKEN-${Date.now()}`,
+            quoteId: quoteId
+          })
+        });
+      } catch (error) {
+        console.error("Error sending payment failure notification:", error);
+      }
+    };
+
+    sendFailureNotification();
+  }, [quoteId]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">

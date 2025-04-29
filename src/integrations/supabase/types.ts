@@ -307,6 +307,62 @@ export type Database = {
           },
         ]
       }
+      payment_notifications: {
+        Row: {
+          amount: number
+          client_name: string
+          created_at: string
+          description: string
+          fee: number
+          id: string
+          merchant_payment_reference: string
+          notification_token: string
+          payment_method: string
+          payment_reference: string
+          payment_status: string
+          processed: boolean | null
+          quote_id: string | null
+        }
+        Insert: {
+          amount: number
+          client_name: string
+          created_at?: string
+          description: string
+          fee: number
+          id?: string
+          merchant_payment_reference: string
+          notification_token: string
+          payment_method: string
+          payment_reference: string
+          payment_status: string
+          processed?: boolean | null
+          quote_id?: string | null
+        }
+        Update: {
+          amount?: number
+          client_name?: string
+          created_at?: string
+          description?: string
+          fee?: number
+          id?: string
+          merchant_payment_reference?: string
+          notification_token?: string
+          payment_method?: string
+          payment_reference?: string
+          payment_status?: string
+          processed?: boolean | null
+          quote_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_notifications_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
