@@ -17,6 +17,31 @@ serve(async (req) => {
     const reqBody = await req.json();
     console.log("📨 Données reçues :", JSON.stringify(reqBody, null, 2));
 
+    // Verify authorization token
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Missing or invalid authorization header" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+    
+    const token = authHeader.replace("Bearer ", "");
+    const expectedToken = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
+    
+    if (token !== expectedToken) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authorization token" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const {
       quoteId,
       totalAmount,
@@ -29,11 +54,10 @@ serve(async (req) => {
       paymentDescription = "Plaquette d'offres",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
       message = "Plaquette d'offres",
-      token
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!quoteId || !totalAmount || !clientEmail || !token) {
+    if (!quoteId || !totalAmount || !clientEmail) {
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {

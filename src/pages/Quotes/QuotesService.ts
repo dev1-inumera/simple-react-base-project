@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Quote, CartItem } from "@/types";
 import { createNotification } from "@/services/NotificationService";
@@ -311,6 +312,7 @@ export const createPaymentLink = async (
 ) => {
   try {
     const origin = window.location.origin;
+    const TOKEN = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
 
     const payload = {
       quoteId,
@@ -323,8 +325,7 @@ export const createPaymentLink = async (
       paymentDescription: options.paymentDescription || "Plaquette d'offres",
       methods: options.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
       message: options.message || "Plaquette d'offres",
-      notificationUrl: "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification",
-      token: "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy"
+      notificationUrl: "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification"
     };
 
     const response = await fetch(
@@ -333,7 +334,7 @@ export const createPaymentLink = async (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "apikey": "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy"
+          "Authorization": `Bearer ${TOKEN}`
         },
         body: JSON.stringify(payload),
       }
