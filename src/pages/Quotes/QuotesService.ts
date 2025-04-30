@@ -295,8 +295,9 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
 
 export const createPaymentLink = async (
   amount: number,
-  clientEmail: string,
+  clientName: string,
   options: {
+    clientEmail?: string,
     change?: {
       currency: string,
       rate: number,
@@ -317,10 +318,15 @@ export const createPaymentLink = async (
     // and accessed only in the Edge Function
     const apiKey = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
     
+    // Assurons-nous que le montant est correct (il doit être en centimes)
+    // On vérifie si le montant est déjà en centimes (grand nombre) ou en unités (petit nombre)
+    const normalizedAmount = amount > 1000 ? Math.round(amount) : Math.round(amount * 100);
+    
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
-        amount: amount,
-        clientEmail,
+        amount: normalizedAmount,
+        clientName,
+        clientEmail: options.clientEmail || "", // Gardons clientEmail comme option facultative
         apiKey, // Pass the API key to the Edge Function
         change: options.change || {
           currency: "EUR",
@@ -329,7 +335,7 @@ export const createPaymentLink = async (
         failureUrl: options.failureUrl || `${origin}/payment/failure`,
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
-        notificationUrl: `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
+        notificationUrl: options.notificationUrl || `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
         paymentDescription: options.paymentDescription || "Plaquette d'offres",
         methods: options.methods || [
           "ORANGE_MONEY",

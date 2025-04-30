@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,10 +102,10 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
   };
 
   const handlePayment = async () => {
-    if (!client?.email) {
+    if (!client) {
       toast({
         title: "Erreur",
-        description: "L'email du client est requis pour le paiement.",
+        description: "Les informations du client sont requises pour le paiement.",
         variant: "destructive",
       });
       return;
@@ -112,10 +113,18 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
 
     try {
       setProcessingPayment(true);
+      
+      // Construction du nom complet du client
+      const clientFullName = `${client.first_name || ""} ${client.last_name || ""}`.trim() || "Client";
+      
+      // Calculer le montant total en euros (non en centimes)
+      const totalAmount = Number(quote.totalAmount);
+      
       const response = await createPaymentLink(
-        Number(quote.totalAmount) * 100, // Montant en centimes
-        client.email,
+        totalAmount,
+        clientFullName,
         {
+          clientEmail: client.email, // Passer l'email comme option maintenant
           change: {
             currency: "EUR",
             rate: 1

@@ -19,7 +19,8 @@ serve(async (req) => {
 
     const {
       amount,
-      clientEmail,
+      clientName,
+      clientEmail = "", // Email maintenant optionnel
       apiKey, // Added to receive the API key from the client
       change = { currency: "EUR", rate: 1 },
       failureUrl,
@@ -32,7 +33,7 @@ serve(async (req) => {
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!amount || !clientEmail || !apiKey) { // Added apiKey to required fields
+    if (!amount || !clientName || !apiKey) { // Changé clientEmail en clientName et ajouté apiKey aux champs obligatoires
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {
@@ -53,7 +54,8 @@ serve(async (req) => {
       successUrl: successUrl || `${baseUrl}/payment/success`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback`,
       notificationUrl: notificationUrl,
-      clientEmail: clientEmail,
+      clientName: clientName, // Changé clientEmail en clientName
+      clientEmail: clientEmail, // Gardé comme champ facultatif
       paymentDescription: paymentDescription,
       methods: methods,
       message: message
