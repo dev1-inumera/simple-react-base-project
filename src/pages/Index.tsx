@@ -1,57 +1,27 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { auth } = useAuth();
+
+  useEffect(() => {
+    if (auth.user && !auth.isLoading) {
+      navigate('/dashboard');
+    }
+  }, [auth.user, auth.isLoading, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1F2C] text-white">
-      <div className="w-full max-w-xl p-8">
-        <div className="flex items-center mb-16">
-          <div className="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center mr-4">
-            <span className="text-white font-semibold">i</span>
-          </div>
-          <h1 className="text-xl font-medium">i-numa app.</h1>
-        </div>
-
-        <div className="space-y-6">
-          <div>
-            <p className="text-blue-400 uppercase text-sm font-semibold tracking-wider">Commencez gratuitement</p>
-            <h2 className="text-4xl font-bold mt-2">Créez votre compte<span className="text-blue-400">.</span></h2>
-            <p className="text-gray-400 mt-3">Vous avez déjà un compte? <span 
-              className="text-blue-400 cursor-pointer hover:underline"
-              onClick={() => navigate('/login')}
-            >Se connecter</span></p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <Button 
-              onClick={() => navigate('/register')} 
-              className="bg-blue-500 hover:bg-blue-600 text-white py-6"
-            >
-              Créer un compte
-            </Button>
-            <Button 
-              onClick={() => navigate('/login')} 
-              variant="outline" 
-              className="border-gray-600 text-white hover:bg-gray-700 py-6"
-            >
-              Se connecter
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Right side decoration - just a hint of an image */}
-      <div className="hidden lg:block fixed right-0 top-0 bottom-0 w-1/3 bg-[#1A1F2C]">
-        <div className="h-full w-full opacity-10 bg-cover bg-center" 
-             style={{backgroundImage: "url('/public/lovable-uploads/a5010d47-2fff-47c9-92a6-deba6b79fda5.png')"}} />
-        <div className="absolute bottom-8 right-8">
-          <div className="text-white font-bold text-4xl">
-            .iN
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-soft-purple to-soft-blue">
+      <div className="text-center bg-white p-10 rounded-xl shadow-lg">
+        <h1 className="text-5xl font-bold mb-4 text-vivid-purple">i-numa</h1>
+        <p className="text-xl text-gray-600 mb-6">Bienvenue sur votre application CRM</p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button onClick={() => navigate('/login')} className="px-8">Se connecter</Button>
+          <Button onClick={() => navigate('/register')} variant="outline" className="px-8">S'inscrire</Button>
         </div>
       </div>
     </div>
