@@ -118,8 +118,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
       const clientFullName = `${client.first_name || ""} ${client.last_name || ""}`.trim() || "Client";
       
       // Utiliser directement totalAmount sans modification
-      const totalAmount = Number(quote.totalAmount);
-      console.log("totalMontant", totalAmount);
+     
       const response = await createPaymentLink(
         totalAmount,
         clientFullName,
