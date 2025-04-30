@@ -40,6 +40,12 @@ const Index = () => {
         <Users size={32} />
       </div>
       
+      {/* Footer with logo */}
+      <div className="absolute bottom-4 right-4 z-10 flex items-center">
+        <span className="text-white text-sm mr-2">Développé par</span>
+        <img src="/lovable-uploads/bd88a5bf-3502-442c-bfda-cab3f421f25e.png" alt="i-numera logo" className="h-6" />
+      </div>
+      
       <div className="z-10 text-center bg-white/70 backdrop-blur-md p-8 md:p-10 rounded-xl shadow-xl w-11/12 max-w-md">
         <h1 className="text-5xl font-bold mb-4">
           <span className="text-[#bb0c19]">i</span>
