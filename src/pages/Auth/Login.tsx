@@ -68,40 +68,31 @@ const Login = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex w-full h-full bg-white">
-      {/* Colonne gauche: Connexion avec image en fond et transparence */}
-      <div 
-        className="w-full md:w-1/2 flex items-center justify-center p-8 relative"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
-        
+    <div className="fixed inset-0 flex w-full h-full">
+      {/* Colonne gauche: Connexion avec fond sombre */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 relative bg-[#111]">
         <div className="absolute top-8 left-8 z-10">
           <h1 className="text-2xl font-bold">
             <span className="text-[#bb0c19]">i</span>
-            <span className="text-[#272C57]">-numa</span>
+            <span className="text-white">-numa</span>
           </h1>
         </div>
 
         {/* Footer with logo - moved to the left column left side */}
         <div className="absolute bottom-4 left-4 z-10 flex items-center">
-          <span className="text-gray-600 text-sm mr-2">Développé par</span>
+          <span className="text-gray-400 text-sm mr-2">Développé par</span>
           <img src="/lovable-uploads/bd88a5bf-3502-442c-bfda-cab3f421f25e.png" alt="i-numera logo" className="h-6" />
         </div>
 
         <div className="w-full max-w-md z-10">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold">Connexion</h1>
-            <p className="text-gray-600 mt-2">Entrez vos identifiants pour vous connecter</p>
+          <div className="text-left mb-8">
+            <h1 className="text-3xl font-bold text-white">Connexion</h1>
+            <p className="text-gray-400 mt-2">Entrez vos identifiants pour vous connecter</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-300">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -110,13 +101,13 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
                 required
-                className="border-input/60 bg-white/80"
+                className="bg-[#222] border-[#333] text-white"
               />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Link to="#" className="text-sm text-primary hover:underline">
+                <Label htmlFor="password" className="text-gray-300">Mot de passe</Label>
+                <Link to="#" className="text-sm text-blue-400 hover:underline">
                   Mot de passe oublié ?
                 </Link>
               </div>
@@ -127,35 +118,28 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
-                className="border-input/60 bg-white/80"
+                className="bg-[#222] border-[#333] text-white"
               />
             </div>
             
             <Button 
               type="submit" 
-              className="w-full shadow-md hover:shadow-lg transition-all" 
+              className="w-full bg-blue-600 hover:bg-blue-700 transition-all" 
               disabled={loading}
             >
               {loading ? "Connexion en cours..." : "Se connecter"}
             </Button>
+            
+            <p className="text-gray-400 text-center text-sm mt-4">
+              Vous n'avez pas de compte ? <Link to="/register" className="text-blue-400 hover:underline">S'inscrire</Link>
+            </p>
           </form>
         </div>
       </div>
       
-      {/* Colonne droite: Publicité avec animation - fixed to display properly */}
+      {/* Colonne droite: Publicité avec image en fond */}
       <div className="hidden md:flex w-1/2 h-full overflow-hidden">
-        {/* Floating elements */}
-        <div className="absolute top-20 left-20 text-white/20 animate-pulse z-10">
-          <Star size={40} />
-        </div>
-        <div className="absolute bottom-20 right-20 text-white/20 animate-pulse z-10" style={{ animationDelay: '1s' }}>
-          <Star size={24} />
-        </div>
-        <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse z-10" style={{ animationDelay: '1.5s' }}>
-          <Users size={32} />
-        </div>
-
-        {/* Fixed carousel display */}
+        {/* Carousel display */}
         <Carousel 
           className="w-full h-full"
           opts={{
@@ -171,20 +155,23 @@ const Login = () => {
               <div className="relative w-full h-full">
                 {/* Image en fond */}
                 <div 
-                  className="absolute inset-0 bg-purple-500"
+                  className="absolute inset-0 bg-black"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80')",
+                    backgroundImage: "url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1920&q=80')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/80 to-blue-600/80 backdrop-blur-sm" />
+                  <div className="absolute inset-0 bg-black/60" />
                 </div>
                 
                 {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Solutions digitales</h2>
-                  <p className="text-xl text-center">Transformation digitale sur mesure pour votre entreprise avec des solutions innovantes adaptées à vos besoins spécifiques.</p>
+                <div className="absolute inset-0 flex flex-col items-start justify-center p-16 text-white">
+                  <h2 className="text-3xl font-bold mb-2">Une nouvelle façon</h2>
+                  <p className="text-xl mb-6">d'expérimenter la transformation digitale.</p>
+                  <button className="px-4 py-2 border border-white/40 text-sm hover:bg-white/10 transition-colors">
+                    EN SAVOIR PLUS
+                  </button>
                 </div>
               </div>
             </CarouselItem>
@@ -193,20 +180,23 @@ const Login = () => {
               <div className="relative w-full h-full">
                 {/* Image en fond */}
                 <div 
-                  className="absolute inset-0"
+                  className="absolute inset-0 bg-black"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1920&q=80')",
+                    backgroundImage: "url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1920&q=80')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/80 to-red-500/80 backdrop-blur-sm" />
+                  <div className="absolute inset-0 bg-black/60" />
                 </div>
                 
                 {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Expertise technologique</h2>
-                  <p className="text-xl text-center">Nos experts vous accompagnent dans l'adoption des dernières technologies pour rester compétitif dans un monde en constante évolution.</p>
+                <div className="absolute inset-0 flex flex-col items-start justify-center p-16 text-white">
+                  <h2 className="text-3xl font-bold mb-2">Solutions innovantes</h2>
+                  <p className="text-xl mb-6">pour votre entreprise digitale.</p>
+                  <button className="px-4 py-2 border border-white/40 text-sm hover:bg-white/10 transition-colors">
+                    DÉCOUVRIR
+                  </button>
                 </div>
               </div>
             </CarouselItem>
@@ -215,20 +205,23 @@ const Login = () => {
               <div className="relative w-full h-full">
                 {/* Image en fond */}
                 <div 
-                  className="absolute inset-0"
+                  className="absolute inset-0 bg-black"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1920&q=80')",
+                    backgroundImage: "url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80')",
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/80 to-teal-600/80 backdrop-blur-sm" />
+                  <div className="absolute inset-0 bg-black/60" />
                 </div>
                 
                 {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Support continu</h2>
-                  <p className="text-xl text-center">Un accompagnement personnalisé et un support réactif pour garantir la réussite de vos projets numériques.</p>
+                <div className="absolute inset-0 flex flex-col items-start justify-center p-16 text-white">
+                  <h2 className="text-3xl font-bold mb-2">Expertise technique</h2>
+                  <p className="text-xl mb-6">à votre service depuis plus de 10 ans.</p>
+                  <button className="px-4 py-2 border border-white/40 text-sm hover:bg-white/10 transition-colors">
+                    NOS SERVICES
+                  </button>
                 </div>
               </div>
             </CarouselItem>
