@@ -16,12 +16,14 @@ const Index = () => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      className="fixed inset-0 flex items-center justify-center"
       style={{ 
         backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80')",
         backgroundPosition: 'center',
         backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        width: '100vw',
+        height: '100vh',
       }}
     >
       <div className="absolute inset-0 bg-black/60" />
