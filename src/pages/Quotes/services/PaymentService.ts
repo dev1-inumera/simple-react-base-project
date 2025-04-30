@@ -78,7 +78,7 @@ export const createPaymentLink = async (
       callbackUrl: options.callbackUrl || `${origin}/payment/callback/${quoteId}`,
       paymentDescription: options.paymentDescription || "Plaquette d'offres",
       methods: options.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message: options.message || "Plaquette d'offres",
+      message: options.message || "i-numera",
       notificationUrl: "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification"
     };
 

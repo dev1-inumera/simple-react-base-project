@@ -113,7 +113,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
     try {
       setProcessingPayment(true);
       const response = await createPaymentLink(
-        quote.id,
         Number(quote.totalAmount) * 100, // Montant en centimes
         client.email,
         {
