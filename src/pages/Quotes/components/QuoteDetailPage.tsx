@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QuoteDetailView from "./QuoteDetailView";
-import { fetchQuoteById } from "../services/QuoteService";
+import { fetchQuoteById } from "../QuotesService";
 import { useToast } from "@/hooks/use-toast";
 
 const QuoteDetailPage: React.FC = () => {

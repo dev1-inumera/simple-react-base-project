@@ -17,31 +17,6 @@ serve(async (req) => {
     const reqBody = await req.json();
     console.log("📨 Données reçues :", JSON.stringify(reqBody, null, 2));
 
-    // Verify authorization token
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "Missing or invalid authorization header" }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-    
-    const token = authHeader.replace("Bearer ", "");
-    const expectedToken = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
-    
-    if (token !== expectedToken) {
-      return new Response(
-        JSON.stringify({ error: "Invalid authorization token" }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
     const {
       quoteId,
       totalAmount,
@@ -50,10 +25,9 @@ serve(async (req) => {
       failureUrl,
       successUrl,
       callbackUrl,
-      notificationUrl,
       paymentDescription = "Plaquette d'offres",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message = "Plaquette d'offres",
+      message = "Plaquette d'offres"
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
@@ -77,7 +51,6 @@ serve(async (req) => {
       failureUrl: failureUrl || `${baseUrl}/payment/failure?quoteId=${quoteId}`,
       successUrl: successUrl || `${baseUrl}/payment/success?quoteId=${quoteId}`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback/${quoteId}`,
-      notificationUrl: notificationUrl,
       clientEmail: clientEmail,
       paymentDescription: paymentDescription,
       methods: methods,
@@ -87,12 +60,11 @@ serve(async (req) => {
     // 📝 Log du payload final envoyé à l'API
     console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
 
-    // 🔗 Envoi vers l'API PAPI avec le token d'autorisation
+    // 🔗 Envoi vers l'API PAPI
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(requestBody),
     });
