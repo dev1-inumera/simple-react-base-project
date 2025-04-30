@@ -24,6 +24,7 @@ serve(async (req) => {
       failureUrl,
       successUrl,
       callbackUrl,
+      notificationUrl, // Added notificationUrl parameter
       paymentDescription = "Plaquette d'offres",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
       message = "Plaquette d'offres"
@@ -50,6 +51,7 @@ serve(async (req) => {
       failureUrl: failureUrl || `${baseUrl}/payment/failure`,
       successUrl: successUrl || `${baseUrl}/payment/success`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback`,
+      notificationUrl: notificationUrl, // Include notificationUrl in the payload
       clientEmail: clientEmail,
       paymentDescription: paymentDescription,
       methods: methods,
