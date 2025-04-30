@@ -324,7 +324,7 @@ export const createPaymentLink = async (
         failureUrl: options.failureUrl || `${origin}/payment/failure`,
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
-        notificationUrl: options.notificationUrl || `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`, // Added notificationUrl with default value
+        notificationUrl: `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`, // Added notificationUrl with default value
         paymentDescription: options.paymentDescription || "Plaquette d'offres",
         methods: options.methods || [
           "ORANGE_MONEY",
