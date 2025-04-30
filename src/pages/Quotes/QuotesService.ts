@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Quote, CartItem } from "@/types";
 import { createNotification } from "@/services/NotificationService";
@@ -318,21 +317,23 @@ export const createPaymentLink = async (
       totalAmount: amount,
       clientEmail,
       change: options.change || { currency: "EUR", rate: 1 },
-      failureUrl: options.failureUrl || ${origin}/payment/failure?quoteId=${quoteId},
-      successUrl: options.successUrl || ${origin}/payment/success?quoteId=${quoteId},
-      callbackUrl: options.callbackUrl || ${origin}/payment/callback/${quoteId},
+      failureUrl: options.failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
+      successUrl: options.successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
+      callbackUrl: options.callbackUrl || `${origin}/payment/callback/${quoteId}`,
       paymentDescription: options.paymentDescription || "Plaquette d'offres",
       methods: options.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
       message: options.message || "Plaquette d'offres",
+      token: "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy",
+      notificationUrl: "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification"
     };
 
     const response = await fetch(
-      "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification",
+      "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-link",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy",
+          "Authorization": `Bearer ${payload.token}`,
         },
         body: JSON.stringify(payload),
       }
