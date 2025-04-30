@@ -22,7 +22,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, description, f
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center px-4 py-10"
+      className="fixed inset-0 flex items-center justify-center overflow-hidden"
       style={{ 
         backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80')",
         backgroundPosition: 'center',
