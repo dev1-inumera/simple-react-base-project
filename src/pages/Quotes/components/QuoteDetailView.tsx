@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -132,7 +131,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
           failureUrl: `${window.location.origin}/payment/failure?quoteId=${quote.id}`,
           successUrl: `${window.location.origin}/payment/success?quoteId=${quote.id}`,
           callbackUrl: `${window.location.origin}/payment/callback/${quote.id}`,
-          paymentDescription: "Plaquette d'offres",
+          description: "Plaquette d'offres", // Changed from paymentDescription to description
           methods: [
             "ORANGE_MONEY",
             "MVOLA",
