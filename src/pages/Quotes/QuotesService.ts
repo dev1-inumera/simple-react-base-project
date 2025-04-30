@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Quote, CartItem } from "@/types";
 import { createNotification } from "@/services/NotificationService";
@@ -306,11 +305,11 @@ export const createPaymentLink = async (
     successUrl?: string,
     callbackUrl?: string,
     notificationUrl?: string,
-    description?: string, // Renamed from paymentDescription to description
+    description?: string,
     methods?: string[],
     message?: string,
-    validDuration?: number, // Added validDuration parameter
-    reference?: string, // Added reference parameter
+    validDuration?: number,
+    reference?: string,
   } = {}
 ) => {
   try {
@@ -320,16 +319,15 @@ export const createPaymentLink = async (
     // and accessed only in the Edge Function
     const apiKey = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
     
-    // Assurons-nous que le montant est correct (il doit être en centimes)
-    // On vérifie si le montant est déjà en centimes (grand nombre) ou en unités (petit nombre)
-    const normalizedAmount = amount > 1000 ? Math.round(amount) : Math.round(amount * 100);
+    // Use the amount directly without any conversion or normalization
+    // This assumes the amount is already in the correct format expected by the payment API
     
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
-        amount: normalizedAmount,
+        amount: amount, // Use the amount directly as passed from QuoteDetailView
         clientName,
-        clientEmail: options.clientEmail || "", // Gardons clientEmail comme option facultative
-        apiKey, // Pass the API key to the Edge Function
+        clientEmail: options.clientEmail || "",
+        apiKey,
         change: options.change || {
           currency: "EUR",
           rate: 1
@@ -338,15 +336,15 @@ export const createPaymentLink = async (
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
         notificationUrl: options.notificationUrl || `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
-        description: options.description || "i-numera", // Changed from paymentDescription to description and default value
+        description: options.description || "i-numera",
         methods: options.methods || [
           "ORANGE_MONEY",
           "MVOLA",
           "VISA"
         ],
-        message: options.message || "i-numera", // Changed default value
-        validDuration: options.validDuration || 4, // Added with default value of 4
-        reference: options.reference || `quote-${Date.now()}`, // Added with default reference value
+        message: options.message || "i-numera",
+        validDuration: options.validDuration || 4,
+        reference: options.reference || `quote-${Date.now()}`,
       }
     });
 

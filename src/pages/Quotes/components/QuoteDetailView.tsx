@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,14 +117,14 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
       // Construction du nom complet du client
       const clientFullName = `${client.first_name || ""} ${client.last_name || ""}`.trim() || "Client";
       
-      // Calculer le montant total en euros (non en centimes)
+      // Utiliser directement totalAmount sans modification
       const totalAmount = Number(quote.totalAmount);
       
       const response = await createPaymentLink(
         totalAmount,
         clientFullName,
         {
-          clientEmail: client.email, // Passer l'email comme option maintenant
+          clientEmail: client.email,
           change: {
             currency: "EUR",
             rate: 1
@@ -131,7 +132,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
           failureUrl: `${window.location.origin}/payment/failure?quoteId=${quote.id}`,
           successUrl: `${window.location.origin}/payment/success?quoteId=${quote.id}`,
           callbackUrl: `${window.location.origin}/payment/callback/${quote.id}`,
-          description: "Plaquette d'offres", // Changed from paymentDescription to description
+          description: "Plaquette d'offres",
           methods: [
             "ORANGE_MONEY",
             "MVOLA",

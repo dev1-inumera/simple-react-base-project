@@ -20,22 +20,22 @@ serve(async (req) => {
     const {
       amount,
       clientName,
-      clientEmail = "", // Email maintenant optionnel
-      apiKey, // Added to receive the API key from the client
+      clientEmail = "",
+      apiKey,
       change = { currency: "EUR", rate: 1 },
       failureUrl,
       successUrl,
       callbackUrl,
       notificationUrl,
-      description = "i-numera", // Renamed from paymentDescription to description with new default value
+      description = "i-numera",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message = "i-numera", // Changed default value
-      validDuration = 4, // Added validDuration parameter with default value of 4
-      reference = `quote-${Date.now()}` // Added reference parameter with default value
+      message = "i-numera",
+      validDuration = 4,
+      reference = `quote-${Date.now()}`
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!amount || !clientName || !apiKey) { // Changé clientEmail en clientName et ajouté apiKey aux champs obligatoires
+    if (!amount || !clientName || !apiKey) {
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {
@@ -51,18 +51,18 @@ serve(async (req) => {
     // 🧱 Construction du payload de la requête vers PAPI
     const requestBody = {
       change: change,
-      amount: amount,
+      amount: amount, // Use the amount directly as passed from the client
       failureUrl: failureUrl || `${baseUrl}/payment/failure`,
       successUrl: successUrl || `${baseUrl}/payment/success`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback`,
       notificationUrl: notificationUrl,
-      clientName: clientName, // Changé clientEmail en clientName
-      clientEmail: clientEmail, // Gardé comme champ facultatif
-      description: description, // Changed from paymentDescription to description
+      clientName: clientName,
+      clientEmail: clientEmail,
+      description: description,
       methods: methods,
       message: message,
-      validDuration: validDuration, // Added validDuration
-      reference: reference // Added reference
+      validDuration: validDuration,
+      reference: reference
     };
 
     // 📝 Log du payload final envoyé à l'API (sans afficher l'API key)
@@ -73,7 +73,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Token": apiKey, // Using the correct header format: "Token" instead of "Authorization: Bearer"
+        "Token": apiKey,
       },
       body: JSON.stringify(requestBody),
     });
