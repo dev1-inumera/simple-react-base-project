@@ -336,7 +336,7 @@ export const createPaymentLink = async (
           "MVOLA",
           "VISA"
         ],
-        message: options.message || "Plaquette d'offres"
+        message: options.message || "i-numera"
       }
     });
 
