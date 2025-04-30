@@ -3,3 +3,6 @@ project_id = "wprlkplzlhyrphbcaalc"
 
 [functions.payment-notification]
 verify_jwt = false
+
+[functions.payment-link]
+verify_jwt = true

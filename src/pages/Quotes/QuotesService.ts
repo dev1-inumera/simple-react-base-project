@@ -304,7 +304,7 @@ export const createPaymentLink = async (
     failureUrl?: string,
     successUrl?: string,
     callbackUrl?: string,
-    notificationUrl?: string, // Added notificationUrl parameter
+    notificationUrl?: string,
     paymentDescription?: string,
     methods?: string[],
     message?: string,
@@ -313,10 +313,15 @@ export const createPaymentLink = async (
   try {
     const origin = window.location.origin;
     
+    // This is the Papi API Key - normally it should be stored as a Supabase secret
+    // and accessed only in the Edge Function
+    const apiKey = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
+    
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
         amount: amount,
         clientEmail,
+        apiKey, // Pass the API key to the Edge Function
         change: options.change || {
           currency: "EUR",
           rate: 1
@@ -324,7 +329,7 @@ export const createPaymentLink = async (
         failureUrl: options.failureUrl || `${origin}/payment/failure`,
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
-        notificationUrl: `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`, // Added notificationUrl with default value
+        notificationUrl: `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
         paymentDescription: options.paymentDescription || "Plaquette d'offres",
         methods: options.methods || [
           "ORANGE_MONEY",

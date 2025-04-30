@@ -20,18 +20,19 @@ serve(async (req) => {
     const {
       amount,
       clientEmail,
+      apiKey, // Added to receive the API key from the client
       change = { currency: "EUR", rate: 1 },
       failureUrl,
       successUrl,
       callbackUrl,
-      notificationUrl, // Added notificationUrl parameter
+      notificationUrl,
       paymentDescription = "Plaquette d'offres",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
       message = "Plaquette d'offres"
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!amount || !clientEmail) {
+    if (!amount || !clientEmail || !apiKey) { // Added apiKey to required fields
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {
@@ -51,26 +52,22 @@ serve(async (req) => {
       failureUrl: failureUrl || `${baseUrl}/payment/failure`,
       successUrl: successUrl || `${baseUrl}/payment/success`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback`,
-      notificationUrl: notificationUrl, // Include notificationUrl in the payload
+      notificationUrl: notificationUrl,
       clientEmail: clientEmail,
       paymentDescription: paymentDescription,
       methods: methods,
       message: message
     };
 
-    // Get authorization token from header
-    const authHeader = req.headers.get("Authorization") || "";
-    const token = authHeader.replace("Bearer ", "");
-
-    // 📝 Log du payload final envoyé à l'API
+    // 📝 Log du payload final envoyé à l'API (sans afficher l'API key)
     console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
 
-    // 🔗 Envoi vers l'API PAPI
-    const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
+    // 🔗 Envoi vers l'API PAPI avec le format d'authentification correct
+    const response = await fetch("https://app.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : "",
+        "Token": apiKey, // Using the correct header format: "Token" instead of "Authorization: Bearer"
       },
       body: JSON.stringify(requestBody),
     });
