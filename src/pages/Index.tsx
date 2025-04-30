@@ -69,21 +69,21 @@ const Index = () => {
       </div>
       
       {/* Colonne droite: Publicité avec animation */}
-      <div className="hidden md:block w-1/2 relative bg-[#272C57] overflow-hidden">
+      <div className="hidden md:block w-1/2 h-full relative overflow-hidden">
         {/* Floating elements */}
-        <div className="absolute top-20 left-20 text-white/20 animate-pulse">
+        <div className="absolute top-20 left-20 text-white/20 animate-pulse z-10">
           <Star size={40} />
         </div>
-        <div className="absolute bottom-20 right-20 text-white/20 animate-pulse" style={{ animationDelay: '1s' }}>
+        <div className="absolute bottom-20 right-20 text-white/20 animate-pulse z-10" style={{ animationDelay: '1s' }}>
           <Star size={24} />
         </div>
-        <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse" style={{ animationDelay: '1.5s' }}>
+        <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse z-10" style={{ animationDelay: '1.5s' }}>
           <Users size={32} />
         </div>
 
-        <div className="h-full flex items-center justify-center p-8">
+        <div className="h-full flex items-center justify-center">
           <Carousel 
-            className="w-full max-w-xl"
+            className="w-full h-full"
             opts={{
               align: "center",
               loop: true,
@@ -92,44 +92,70 @@ const Index = () => {
               startIndex: activeSlide
             }}
           >
-            <CarouselContent>
-              <CarouselItem className="flex items-center justify-center">
-                <div className="bg-gradient-to-br from-purple-500/80 to-blue-600/80 backdrop-blur-md p-8 rounded-lg text-white shadow-xl transform transition-all duration-500 hover:scale-105 w-full max-w-lg">
-                  <div className="flex justify-center mb-6">
-                    <img 
-                      src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" 
-                      alt="Digital Transformation" 
-                      className="rounded-lg h-40 w-full object-cover"
-                    />
+            <CarouselContent className="h-full">
+              <CarouselItem className="h-full">
+                <div className="relative w-full h-full">
+                  {/* Image en fond */}
+                  <div 
+                    className="absolute inset-0 bg-purple-500"
+                    style={{
+                      backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80')",
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/80 to-blue-600/80 backdrop-blur-sm" />
                   </div>
-                  <h2 className="text-3xl font-bold mb-4">Solutions digitales</h2>
-                  <p className="text-lg">Transformation digitale sur mesure pour votre entreprise avec des solutions innovantes adaptées à vos besoins spécifiques.</p>
+                  
+                  {/* Texte superposé */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
+                    <h2 className="text-4xl font-bold mb-4">Solutions digitales</h2>
+                    <p className="text-xl text-center">Transformation digitale sur mesure pour votre entreprise avec des solutions innovantes adaptées à vos besoins spécifiques.</p>
+                  </div>
                 </div>
               </CarouselItem>
-              <CarouselItem className="flex items-center justify-center">
-                <div className="bg-gradient-to-br from-amber-500/80 to-red-500/80 backdrop-blur-md p-8 rounded-lg text-white shadow-xl transform transition-all duration-500 hover:scale-105 w-full max-w-lg">
-                  <div className="flex justify-center mb-6">
-                    <img 
-                      src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=600&q=80" 
-                      alt="Technology Expert" 
-                      className="rounded-lg h-40 w-full object-cover"
-                    />
+              
+              <CarouselItem className="h-full">
+                <div className="relative w-full h-full">
+                  {/* Image en fond */}
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: "url('https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1920&q=80')",
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/80 to-red-500/80 backdrop-blur-sm" />
                   </div>
-                  <h2 className="text-3xl font-bold mb-4">Expertise technologique</h2>
-                  <p className="text-lg">Nos experts vous accompagnent dans l'adoption des dernières technologies pour rester compétitif dans un monde en constante évolution.</p>
+                  
+                  {/* Texte superposé */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
+                    <h2 className="text-4xl font-bold mb-4">Expertise technologique</h2>
+                    <p className="text-xl text-center">Nos experts vous accompagnent dans l'adoption des dernières technologies pour rester compétitif dans un monde en constante évolution.</p>
+                  </div>
                 </div>
               </CarouselItem>
-              <CarouselItem className="flex items-center justify-center">
-                <div className="bg-gradient-to-br from-emerald-500/80 to-teal-600/80 backdrop-blur-md p-8 rounded-lg text-white shadow-xl transform transition-all duration-500 hover:scale-105 w-full max-w-lg">
-                  <div className="flex justify-center mb-6">
-                    <img 
-                      src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=600&q=80" 
-                      alt="Support Continu" 
-                      className="rounded-lg h-40 w-full object-cover"
-                    />
+              
+              <CarouselItem className="h-full">
+                <div className="relative w-full h-full">
+                  {/* Image en fond */}
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: "url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1920&q=80')",
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/80 to-teal-600/80 backdrop-blur-sm" />
                   </div>
-                  <h2 className="text-3xl font-bold mb-4">Support continu</h2>
-                  <p className="text-lg">Un accompagnement personnalisé et un support réactif pour garantir la réussite de vos projets numériques.</p>
+                  
+                  {/* Texte superposé */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
+                    <h2 className="text-4xl font-bold mb-4">Support continu</h2>
+                    <p className="text-xl text-center">Un accompagnement personnalisé et un support réactif pour garantir la réussite de vos projets numériques.</p>
+                  </div>
                 </div>
               </CarouselItem>
             </CarouselContent>
