@@ -323,7 +323,6 @@ export const createPaymentLink = async (
       paymentDescription: options.paymentDescription || "Plaquette d'offres",
       methods: options.methods || ["ORANGE_MONEY", "MVOLA", "VISA"],
       message: options.message || "Plaquette d'offres",
-      token: "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy",
       notificationUrl: "https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification"
     };
 
