@@ -18,8 +18,7 @@ serve(async (req) => {
     console.log("📨 Données reçues :", JSON.stringify(reqBody, null, 2));
 
     const {
-      quoteId,
-      totalAmount,
+      amount,
       clientEmail,
       change = { currency: "EUR", rate: 1 },
       failureUrl,
@@ -31,7 +30,7 @@ serve(async (req) => {
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!quoteId || !totalAmount || !clientEmail) {
+    if (!amount || !clientEmail) {
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {
@@ -47,15 +46,19 @@ serve(async (req) => {
     // 🧱 Construction du payload de la requête vers PAPI
     const requestBody = {
       change: change,
-      amount: totalAmount,
-      failureUrl: failureUrl || `${baseUrl}/payment/failure?quoteId=${quoteId}`,
-      successUrl: successUrl || `${baseUrl}/payment/success?quoteId=${quoteId}`,
-      callbackUrl: callbackUrl || `${baseUrl}/payment/callback/${quoteId}`,
+      amount: amount,
+      failureUrl: failureUrl || `${baseUrl}/payment/failure`,
+      successUrl: successUrl || `${baseUrl}/payment/success`,
+      callbackUrl: callbackUrl || `${baseUrl}/payment/callback`,
       clientEmail: clientEmail,
       paymentDescription: paymentDescription,
       methods: methods,
       message: message
     };
+
+    // Get authorization token from header
+    const authHeader = req.headers.get("Authorization") || "";
+    const token = authHeader.replace("Bearer ", "");
 
     // 📝 Log du payload final envoyé à l'API
     console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
@@ -65,6 +68,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : "",
       },
       body: JSON.stringify(requestBody),
     });

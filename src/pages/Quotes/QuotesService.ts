@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Quote, CartItem } from "@/types";
 import { createNotification } from "@/services/NotificationService";
@@ -319,9 +320,9 @@ export const createPaymentLink = async (
           currency: "EUR",
           rate: 1
         },
-        failureUrl: options.failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
-        successUrl: options.successUrl || `${origin}/payment/success?quoteId=${quoteId}`,
-        callbackUrl: options.callbackUrl || `${origin}/payment/callback/${quoteId}`,
+        failureUrl: options.failureUrl || `${origin}/payment/failure`,
+        successUrl: options.successUrl || `${origin}/payment/success`,
+        callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
         paymentDescription: options.paymentDescription || "Plaquette d'offres",
         methods: options.methods || [
           "ORANGE_MONEY",

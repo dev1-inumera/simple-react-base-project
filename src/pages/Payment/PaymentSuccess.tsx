@@ -16,7 +16,14 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     const updatePaymentStatus = async () => {
-      if (!quoteId) return;
+      if (!quoteId) {
+        setIsUpdating(false);
+        toast({
+          title: "Paiement réussi",
+          description: "Votre paiement a été traité avec succès.",
+        });
+        return;
+      }
       
       try {
         // Update quote payment status directly
@@ -35,7 +42,6 @@ const PaymentSuccess = () => {
             merchantPaymentReference: `MREF-${Date.now()}`,
             paymentReference: `PREF-${Date.now()}`,
             notificationToken: `TOKEN-${Date.now()}`
-            // Removed quoteId field
           };
           
           await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/payment-notification`, {

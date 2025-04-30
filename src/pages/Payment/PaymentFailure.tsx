@@ -12,8 +12,6 @@ const PaymentFailure = () => {
 
   useEffect(() => {
     const sendFailureNotification = async () => {
-      if (!quoteId) return;
-      
       try {
         // Prepare notification data
         const notificationData = {
@@ -26,7 +24,6 @@ const PaymentFailure = () => {
           merchantPaymentReference: `MREF-${Date.now()}`,
           paymentReference: `PREF-${Date.now()}`,
           notificationToken: `TOKEN-${Date.now()}`
-          // Removed quoteId field
         };
         
         // Send payment notification to our endpoint
@@ -43,7 +40,7 @@ const PaymentFailure = () => {
     };
 
     sendFailureNotification();
-  }, [quoteId]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
