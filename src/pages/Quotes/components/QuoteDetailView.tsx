@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +13,7 @@ import {
   createPaymentLink
 } from "../QuotesService";
 import { useAuth } from "@/lib/auth";
-import { ArrowLeft, File, Send, Check, X, Printer, SendToBack, CreditCard } from "lucide-react";
+import { ArrowLeft, File, Send, Check, X, Printer, SendToBack, CreditCard, Link } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { fr } from "date-fns/locale";
 import DevisTemplate from "./DevisTemplate";
@@ -39,6 +38,8 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
   const [processingAction, setProcessingAction] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentLink, setPaymentLink] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const isAdmin = hasRole(UserRole.ADMIN);
   const isAgent = hasRole(UserRole.AGENT) && !isAdmin;
@@ -113,12 +114,12 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
 
     try {
       setProcessingPayment(true);
+      setPaymentLink(null); // Reset payment link when generating a new one
       
       // Construction du nom complet du client
       const clientFullName = `${client.first_name || ""} ${client.last_name || ""}`.trim() || "Client";
       
       // Utiliser directement totalAmount sans modification
-     
       const response = await createPaymentLink(
         totalAmount,
         clientFullName,
@@ -141,8 +142,12 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
         }
       );
       
-      if (response?.url) {
-        window.location.href = response.url;
+      if (response?.data?.paymentLink) {
+        setPaymentLink(response.data.paymentLink);
+        toast({
+          title: "Lien de paiement généré",
+          description: "Vous pouvez maintenant copier ce lien.",
+        });
       } else {
         toast({
           title: "Erreur",
@@ -158,6 +163,30 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
       });
     } finally {
       setProcessingPayment(false);
+    }
+  };
+
+  const copyPaymentLink = async () => {
+    if (!paymentLink) return;
+
+    try {
+      await navigator.clipboard.writeText(paymentLink);
+      setLinkCopied(true);
+      toast({
+        title: "Copié!",
+        description: "Le lien de paiement a été copié dans le presse-papier.",
+      });
+      
+      // Reset copied state after 3 seconds
+      setTimeout(() => {
+        setLinkCopied(false);
+      }, 3000);
+    } catch (err) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier le lien.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -352,6 +381,31 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
                 </div>
               </div>
 
+              {/* Payment link section */}
+              {paymentLink && (
+                <div className="mt-4 p-4 border rounded-md bg-muted/30">
+                  <div className="flex flex-col space-y-2">
+                    <h3 className="font-medium">Lien de paiement</h3>
+                    <div className="flex items-center">
+                      <div className="bg-white border rounded-l-md px-3 py-2 flex-1 truncate">
+                        {paymentLink}
+                      </div>
+                      <Button 
+                        onClick={copyPaymentLink} 
+                        className={`rounded-l-none ${linkCopied ? 'bg-green-600' : ''}`}
+                      >
+                        {linkCopied ? (
+                          <Check className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Link className="h-4 w-4 mr-2" />
+                        )}
+                        {linkCopied ? 'Copié' : 'Copier'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="pt-4">
                 <h3 className="font-medium mb-2">Détails des articles</h3>
                 <Table>
@@ -393,7 +447,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
                       className="bg-green-600 hover:bg-green-700"
                     >
                       <CreditCard className="h-4 w-4 mr-2" />
-                      {processingPayment ? "Traitement..." : "Payer maintenant"}
+                      {processingPayment ? "Traitement..." : "Générer lien de paiement"}
                     </Button>
                   )}
                   {renderStatusActions()}
