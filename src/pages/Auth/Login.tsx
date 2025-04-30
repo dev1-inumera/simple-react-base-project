@@ -142,8 +142,29 @@ const Login = () => {
         </div>
       </div>
       
-      {/* Colonne droite: Publicité avec animation - fixed to display properly */}
-      <div className="hidden md:flex w-1/2 h-full overflow-hidden">
+      {/* Colonne droite: Contenu publicitaire */}
+      <div className="hidden md:flex w-1/2 h-full bg-[#272C57] overflow-hidden relative">
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white z-10">
+          <h2 className="text-4xl font-bold mb-4">Solutions digitales</h2>
+          <p className="text-xl text-center max-w-lg">
+            Découvrez nos solutions innovantes pour votre transformation digitale, 
+            adaptées à vos besoins spécifiques. Notre équipe d'experts vous accompagne 
+            dans votre évolution technologique.
+          </p>
+          <div className="mt-8 flex space-x-4">
+            <Button variant="outline" className="text-white border-white hover:bg-white/10">
+              En savoir plus
+            </Button>
+            <Button className="bg-[#bb0c19] hover:bg-[#a00914] text-white">
+              Contactez-nous
+            </Button>
+          </div>
+        </div>
+        
+        {/* Background decoration */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#bb0c19]/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
+        
         {/* Floating elements */}
         <div className="absolute top-20 left-20 text-white/20 animate-pulse z-10">
           <Star size={40} />
@@ -154,86 +175,6 @@ const Login = () => {
         <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse z-10" style={{ animationDelay: '1.5s' }}>
           <Users size={32} />
         </div>
-
-        {/* Fixed carousel display */}
-        <Carousel 
-          className="w-full h-full"
-          opts={{
-            align: "center",
-            loop: true,
-            skipSnaps: false,
-            active: true,
-            startIndex: activeSlide
-          }}
-        >
-          <CarouselContent className="h-full">
-            <CarouselItem className="h-full">
-              <div className="relative w-full h-full">
-                {/* Image en fond */}
-                <div 
-                  className="absolute inset-0 bg-purple-500"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/80 to-blue-600/80 backdrop-blur-sm" />
-                </div>
-                
-                {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Solutions digitales</h2>
-                  <p className="text-xl text-center">Transformation digitale sur mesure pour votre entreprise avec des solutions innovantes adaptées à vos besoins spécifiques.</p>
-                </div>
-              </div>
-            </CarouselItem>
-            
-            <CarouselItem className="h-full">
-              <div className="relative w-full h-full">
-                {/* Image en fond */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1920&q=80')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/80 to-red-500/80 backdrop-blur-sm" />
-                </div>
-                
-                {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Expertise technologique</h2>
-                  <p className="text-xl text-center">Nos experts vous accompagnent dans l'adoption des dernières technologies pour rester compétitif dans un monde en constante évolution.</p>
-                </div>
-              </div>
-            </CarouselItem>
-            
-            <CarouselItem className="h-full">
-              <div className="relative w-full h-full">
-                {/* Image en fond */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&w=1920&q=80')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/80 to-teal-600/80 backdrop-blur-sm" />
-                </div>
-                
-                {/* Texte superposé */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white">
-                  <h2 className="text-4xl font-bold mb-4">Support continu</h2>
-                  <p className="text-xl text-center">Un accompagnement personnalisé et un support réactif pour garantir la réussite de vos projets numériques.</p>
-                </div>
-              </div>
-            </CarouselItem>
-          </CarouselContent>
-        </Carousel>
       </div>
     </div>
   );
