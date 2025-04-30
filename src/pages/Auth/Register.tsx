@@ -126,7 +126,7 @@ const Register = () => {
         <div className="text-center w-full">
           <p className="text-sm text-muted-foreground">
             Vous avez déjà un compte ?{" "}
-            <Link to="/login" className="text-primary font-medium">
+            <Link to="/login" className="text-primary font-medium hover:underline">
               Se connecter
             </Link>
           </p>
@@ -144,6 +144,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
           <div className="space-y-2">
@@ -155,6 +156,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
         </div>
@@ -169,6 +171,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
           <div className="space-y-2">
@@ -180,6 +183,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
         </div>
@@ -195,6 +199,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
           <div className="space-y-2">
@@ -206,6 +211,7 @@ const Register = () => {
               value={formData.phone}
               onChange={handleChange}
               disabled={loading}
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
         </div>
@@ -218,7 +224,7 @@ const Register = () => {
               onValueChange={handleSectorChange}
               required
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-white/80 backdrop-blur-sm border-input/60">
                 <SelectValue placeholder="Sélectionnez un secteur" />
               </SelectTrigger>
               <SelectContent>
@@ -239,6 +245,7 @@ const Register = () => {
               value={formData.birthDate}
               onChange={handleChange}
               disabled={loading}
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
         </div>
@@ -251,6 +258,7 @@ const Register = () => {
             value={formData.address}
             onChange={handleChange}
             disabled={loading}
+            className="bg-white/80 backdrop-blur-sm border-input/60"
           />
         </div>
         
@@ -265,6 +273,7 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
           <div className="space-y-2">
@@ -277,11 +286,16 @@ const Register = () => {
               onChange={handleChange}
               disabled={loading}
               required
+              className="bg-white/80 backdrop-blur-sm border-input/60"
             />
           </div>
         </div>
         
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button 
+          type="submit" 
+          className="w-full shadow-md hover:shadow-lg transition-all" 
+          disabled={loading}
+        >
           {loading ? "Création du compte..." : "S'inscrire"}
         </Button>
       </form>

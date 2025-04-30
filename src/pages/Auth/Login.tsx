@@ -64,7 +64,7 @@ const Login = () => {
         <div className="text-center w-full">
           <p className="text-sm text-muted-foreground">
             Vous n'avez pas de compte ?{" "}
-            <Link to="/register" className="text-primary font-medium">
+            <Link to="/register" className="text-primary font-medium hover:underline">
               S'inscrire
             </Link>
           </p>
@@ -82,12 +82,13 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
             required
+            className="bg-white/80 backdrop-blur-sm border-input/60"
           />
         </div>
         <div className="space-y-2">
           <div className="flex justify-between">
             <Label htmlFor="password">Mot de passe</Label>
-            <Link to="#" className="text-sm text-primary">
+            <Link to="#" className="text-sm text-primary hover:underline">
               Mot de passe oublié ?
             </Link>
           </div>
@@ -98,10 +99,15 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
             required
+            className="bg-white/80 backdrop-blur-sm border-input/60"
           />
         </div>
         
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button 
+          type="submit" 
+          className="w-full shadow-md hover:shadow-lg transition-all" 
+          disabled={loading}
+        >
           {loading ? "Connexion en cours..." : "Se connecter"}
         </Button>
       </form>
