@@ -293,7 +293,6 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
 };
 
 export const createPaymentLink = async (
-  quoteId?: string, 
   amount: number,
   clientEmail: string,
   options: {
@@ -314,8 +313,7 @@ export const createPaymentLink = async (
     
     const { data, error } = await supabase.functions.invoke('payment-link', {
       body: { 
-       
-        totalAmount: amount,
+        amount: amount,
         clientEmail,
         change: options.change || {
           currency: "EUR",
