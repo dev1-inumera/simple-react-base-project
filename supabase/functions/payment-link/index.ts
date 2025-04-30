@@ -27,9 +27,11 @@ serve(async (req) => {
       successUrl,
       callbackUrl,
       notificationUrl,
-      paymentDescription = "Plaquette d'offres",
+      description = "i-numera", // Renamed from paymentDescription to description with new default value
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message = "Plaquette d'offres"
+      message = "i-numera", // Changed default value
+      validDuration = 4, // Added validDuration parameter with default value of 4
+      reference = `quote-${Date.now()}` // Added reference parameter with default value
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
@@ -56,9 +58,11 @@ serve(async (req) => {
       notificationUrl: notificationUrl,
       clientName: clientName, // Changé clientEmail en clientName
       clientEmail: clientEmail, // Gardé comme champ facultatif
-      paymentDescription: paymentDescription,
+      description: description, // Changed from paymentDescription to description
       methods: methods,
-      message: message
+      message: message,
+      validDuration: validDuration, // Added validDuration
+      reference: reference // Added reference
     };
 
     // 📝 Log du payload final envoyé à l'API (sans afficher l'API key)

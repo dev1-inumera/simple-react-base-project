@@ -306,9 +306,11 @@ export const createPaymentLink = async (
     successUrl?: string,
     callbackUrl?: string,
     notificationUrl?: string,
-    paymentDescription?: string,
+    description?: string, // Renamed from paymentDescription to description
     methods?: string[],
     message?: string,
+    validDuration?: number, // Added validDuration parameter
+    reference?: string, // Added reference parameter
   } = {}
 ) => {
   try {
@@ -336,13 +338,15 @@ export const createPaymentLink = async (
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
         notificationUrl: options.notificationUrl || `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
-        paymentDescription: options.paymentDescription || "Plaquette d'offres",
+        description: options.description || "i-numera", // Changed from paymentDescription to description and default value
         methods: options.methods || [
           "ORANGE_MONEY",
           "MVOLA",
           "VISA"
         ],
-        message: options.message || "i-numera"
+        message: options.message || "i-numera", // Changed default value
+        validDuration: options.validDuration || 4, // Added with default value of 4
+        reference: options.reference || `quote-${Date.now()}`, // Added with default reference value
       }
     });
 
