@@ -332,7 +332,7 @@ export const createPaymentLink = async (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${payload.token}`,
+          "Authorization": `Bearer $2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy`,
         },
         body: JSON.stringify(payload),
       }
