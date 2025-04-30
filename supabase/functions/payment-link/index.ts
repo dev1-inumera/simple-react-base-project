@@ -25,13 +25,15 @@ serve(async (req) => {
       failureUrl,
       successUrl,
       callbackUrl,
+      notificationUrl,
       paymentDescription = "Plaquette d'offres",
       methods = ["ORANGE_MONEY", "MVOLA", "VISA"],
-      message = "Plaquette d'offres"
+      message = "Plaquette d'offres",
+      token
     } = reqBody;
 
     // ❌ Vérif des champs obligatoires
-    if (!quoteId || !totalAmount || !clientEmail) {
+    if (!quoteId || !totalAmount || !clientEmail || !token) {
       return new Response(
         JSON.stringify({ error: "Missing required parameters" }),
         {
@@ -51,6 +53,7 @@ serve(async (req) => {
       failureUrl: failureUrl || `${baseUrl}/payment/failure?quoteId=${quoteId}`,
       successUrl: successUrl || `${baseUrl}/payment/success?quoteId=${quoteId}`,
       callbackUrl: callbackUrl || `${baseUrl}/payment/callback/${quoteId}`,
+      notificationUrl: notificationUrl,
       clientEmail: clientEmail,
       paymentDescription: paymentDescription,
       methods: methods,
@@ -60,11 +63,12 @@ serve(async (req) => {
     // 📝 Log du payload final envoyé à l'API
     console.log("🚀 Payload envoyé à l'API PAPI:", JSON.stringify(requestBody, null, 2));
 
-    // 🔗 Envoi vers l'API PAPI
+    // 🔗 Envoi vers l'API PAPI avec le token d'autorisation
     const response = await fetch("https://app-staging.papi.mg/dashboard/api/payment-links", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(requestBody),
     });
