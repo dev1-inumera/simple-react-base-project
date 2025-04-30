@@ -48,7 +48,7 @@ export const fetchPaymentInfoByQuoteId = async (quoteId: string) => {
 };
 
 export const createPaymentLink = async (
-  quoteId: string,
+  
   amount: number,
   clientEmail: string,
   options: {
@@ -69,8 +69,8 @@ export const createPaymentLink = async (
     const TOKEN = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
 
     const payload = {
-      quoteId,
-      totalAmount: amount,
+     
+      amount: amount,
       clientEmail,
       change: options.change || { currency: "EUR", rate: 1 },
       failureUrl: options.failureUrl || `${origin}/payment/failure?quoteId=${quoteId}`,
