@@ -1,1 +1,5 @@
+
 project_id = "wprlkplzlhyrphbcaalc"
+
+[functions.payment-notification]
+verify_jwt = false
