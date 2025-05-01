@@ -3,11 +3,77 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
-import { Star, Users } from 'lucide-react';
+import { Star, Users, ArrowRight, BarChart4, Code, Layers } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+
+const AdContent = ({ title, description, icon: Icon, visible }: { title: string; description: string; icon: React.ElementType; visible: boolean }) => (
+  <div className={`absolute inset-0 flex flex-col items-center justify-center p-12 text-white transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className="flex items-center gap-2 mb-6">
+      <Icon size={28} className="text-[#bb0c19]" />
+      <h2 className="text-5xl font-bold tracking-tight text-gradient">{title}</h2>
+    </div>
+    <p className="text-xl text-center max-w-lg leading-relaxed">
+      {description}
+    </p>
+    
+    {/* Visual accent element */}
+    <div className="w-24 h-1 bg-gradient-to-r from-[#bb0c19] to-[#6e5494] rounded-full my-8"></div>
+    
+    {/* Stats section */}
+    <div className="grid grid-cols-3 gap-6 mt-2 w-full max-w-md">
+      <div className="text-center">
+        <p className="text-3xl font-bold text-[#bb0c19]">99%</p>
+        <p className="text-sm text-white/80">Satisfaction client</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-bold text-[#bb0c19]">24/7</p>
+        <p className="text-sm text-white/80">Support technique</p>
+      </div>
+      <div className="text-center">
+        <p className="text-3xl font-bold text-[#bb0c19]">500+</p>
+        <p className="text-sm text-white/80">Projets réalisés</p>
+      </div>
+    </div>
+  </div>
+);
 
 const Index = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  const [activeSlide, setActiveSlide] = useState(0);
+  
+  // Slides content for the carousel
+  const slides = [
+    {
+      title: "Innovation digitale",
+      description: "Transformez votre entreprise avec nos solutions technologiques avancées. Notre expertise vous permet d'optimiser vos processus et d'améliorer votre compétitivité.",
+      icon: Star
+    },
+    {
+      title: "Expertise technique",
+      description: "Nos équipes d'experts vous accompagnent dans tous vos projets numériques, du développement à la maintenance en passant par la sécurisation de vos données.",
+      icon: Code
+    },
+    {
+      title: "Analyse avancée",
+      description: "Prenez les meilleures décisions grâce à nos outils d'analyse de données qui transforment vos informations en insights stratégiques et actionnables.",
+      icon: BarChart4
+    },
+    {
+      title: "Solutions évolutives",
+      description: "Nos architectures modulaires s'adaptent à la croissance de votre entreprise, permettant une expansion fluide sans compromettre la performance.",
+      icon: Layers
+    }
+  ];
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    
+    return () => clearInterval(timer);
+  }, [slides.length]);
 
   useEffect(() => {
     if (auth.user && !auth.isLoading) {
@@ -17,7 +83,7 @@ const Index = () => {
 
   return (
     <div className="fixed inset-0 flex w-full h-full bg-white">
-      {/* Colonne gauche: Connexion avec image en fond et transparence */}
+      {/* Left column: Login with background image */}
       <div 
         className="w-full md:w-1/2 flex items-center justify-center p-8 relative"
         style={{
@@ -57,14 +123,29 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Colonne droite: Contenu publicitaire avec style amélioré */}
+      {/* Right column: Advertising content with animated carousel */}
       <div className="hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative">
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white z-10">
-          <h2 className="text-5xl font-bold mb-6 tracking-tight text-gradient">Innovation digitale</h2>
-          <p className="text-xl text-center max-w-lg leading-relaxed">
-            Transformez votre entreprise avec nos solutions technologiques avancées.
-            Notre expertise vous permet d'optimiser vos processus et d'améliorer votre compétitivité.
-          </p>
+        {/* Carousel content */}
+        {slides.map((slide, index) => (
+          <AdContent 
+            key={index}
+            title={slide.title}
+            description={slide.description}
+            icon={slide.icon}
+            visible={activeSlide === index}
+          />
+        ))}
+        
+        {/* Navigation dots for the carousel */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${activeSlide === index ? 'bg-[#bb0c19] scale-125' : 'bg-white/30'}`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
         
         {/* Enhanced background decoration */}
