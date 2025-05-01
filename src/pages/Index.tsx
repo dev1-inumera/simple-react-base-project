@@ -1,10 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Star, Users, ArrowRight, BarChart4, Code, Layers } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 
 const AdContent = ({ title, description, icon: Icon, visible }: { title: string; description: string; icon: React.ElementType; visible: boolean }) => (
   <div className={`absolute inset-0 flex flex-col items-center justify-center p-12 text-white transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
@@ -41,6 +39,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   // Slides content for the carousel
   const slides = [
@@ -81,11 +80,18 @@ const Index = () => {
     }
   }, [auth.user, auth.isLoading, navigate]);
 
+  const handleLoginClick = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      navigate('/login');
+    }, 600); // Delay navigation to allow animation to complete
+  };
+
   return (
-    <div className="fixed inset-0 flex w-full h-full bg-white">
+    <div className={`fixed inset-0 flex w-full h-full bg-white transition-opacity duration-500 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
       {/* Left column: Login with background image */}
       <div 
-        className="w-full md:w-1/2 flex items-center justify-center p-8 relative"
+        className={`w-full md:w-1/2 flex items-center justify-center p-8 relative transition-transform duration-700 ${isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'}`}
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1920&q=80')",
           backgroundSize: 'cover',
@@ -116,15 +122,19 @@ const Index = () => {
             <p className="text-xl text-gray-600 mb-8">Solutions innovantes pour votre transformation digitale</p>
           </div>
           <div className="flex flex-col gap-4">
-            <Button onClick={() => navigate('/login')} className="px-8 shadow-md hover:shadow-lg transition-all">
-              Se connecter
+            <Button 
+              onClick={handleLoginClick} 
+              className="px-8 shadow-md hover:shadow-lg transition-all relative group overflow-hidden"
+            >
+              <span className="relative z-10 group-hover:translate-x-[-8px] transition-transform duration-300">Se connecter</span>
+              <ArrowRight className="absolute right-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-4 transition-all duration-300" />
             </Button>
           </div>
         </div>
       </div>
       
       {/* Right column: Advertising content with animated carousel */}
-      <div className="hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative">
+      <div className={`hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative transition-transform duration-700 ${isTransitioning ? 'translate-x-[100%]' : 'translate-x-0'}`}>
         {/* Carousel content */}
         {slides.map((slide, index) => (
           <AdContent 

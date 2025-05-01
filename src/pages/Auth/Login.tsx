@@ -1,13 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { seedOffers, seedAdminUser, seedAgentUser } from "@/lib/seed-data";
-import { Star, Users, Code, BarChart4, Layers } from 'lucide-react';
+import { Star, Users, Code, BarChart4, Layers, ArrowLeft } from 'lucide-react';
 
 // Ad content component for better organization
 const AdContent = ({ title, description, icon: Icon, visible }: { title: string; description: string; icon: React.ElementType; visible: boolean }) => (
@@ -45,11 +44,14 @@ const Login = () => {
   const { signIn } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [entranceAnimation, setEntranceAnimation] = useState(false);
+  const [exitAnimation, setExitAnimation] = useState(false);
   
   // Slides content for the carousel
   const slides = [
@@ -74,6 +76,16 @@ const Login = () => {
       icon: Layers
     }
   ];
+
+  // Apply entrance animation
+  useEffect(() => {
+    // Set a small delay to trigger the animation after component mount
+    const timer = setTimeout(() => {
+      setEntranceAnimation(true);
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // Auto-advance carousel
   useEffect(() => {
@@ -122,11 +134,20 @@ const Login = () => {
     }
   };
 
+  const handleBackToHome = () => {
+    setExitAnimation(true);
+    setTimeout(() => {
+      navigate('/');
+    }, 600);
+  };
+
   return (
-    <div className="fixed inset-0 flex w-full h-full bg-white">
+    <div className={`fixed inset-0 flex w-full h-full bg-white transition-opacity duration-500 ${entranceAnimation ? 'opacity-100' : 'opacity-0'} ${exitAnimation ? 'opacity-0' : 'opacity-100'}`}>
       {/* Left column: Login form with background image */}
       <div 
-        className="w-full md:w-1/2 flex items-center justify-center p-8 relative"
+        className={`w-full md:w-1/2 flex items-center justify-center p-8 relative transition-transform duration-700
+                   ${entranceAnimation ? 'translate-x-0' : 'translate-x-[-100%]'} 
+                   ${exitAnimation ? 'translate-x-[-100%]' : 'translate-x-0'}`}
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')",
           backgroundSize: 'cover',
@@ -142,6 +163,19 @@ const Login = () => {
           </h1>
         </div>
 
+        {/* Back button */}
+        <div className="absolute top-8 right-8 z-10">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBackToHome}
+            className="group flex items-center gap-1 hover:gap-2 transition-all"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:translate-x-[-2px]" />
+            <span>Retour</span>
+          </Button>
+        </div>
+
         {/* Footer with logo - moved to the left column left side */}
         <div className="absolute bottom-4 left-4 z-10 flex items-center">
           <span className="text-gray-600 text-sm mr-2">Développé par</span>
@@ -149,13 +183,22 @@ const Login = () => {
         </div>
 
         <div className="w-full max-w-md z-10">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 transform transition-all duration-500 delay-100 translate-y-0 opacity-100" style={{
+            transform: entranceAnimation ? 'translateY(0)' : 'translateY(20px)',
+            opacity: entranceAnimation ? 1 : 0,
+          }}>
             <h1 className="text-3xl font-bold">Connexion</h1>
             <p className="text-gray-600 mt-2">Entrez vos identifiants pour vous connecter</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
+            <div 
+              className="space-y-2 transition-all duration-500 delay-200" 
+              style={{
+                transform: entranceAnimation ? 'translateY(0)' : 'translateY(20px)',
+                opacity: entranceAnimation ? 1 : 0,
+              }}
+            >
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -168,7 +211,13 @@ const Login = () => {
                 className="border-input/60 bg-white/80"
               />
             </div>
-            <div className="space-y-2">
+            <div 
+              className="space-y-2 transition-all duration-500 delay-300"
+              style={{
+                transform: entranceAnimation ? 'translateY(0)' : 'translateY(20px)',
+                opacity: entranceAnimation ? 1 : 0,
+              }}
+            >
               <div className="flex justify-between">
                 <Label htmlFor="password">Mot de passe</Label>
                 <Link to="#" className="text-sm text-primary hover:underline">
@@ -190,6 +239,12 @@ const Login = () => {
               type="submit" 
               className="w-full shadow-md hover:shadow-lg transition-all" 
               disabled={loading}
+              style={{
+                transform: entranceAnimation ? 'translateY(0)' : 'translateY(20px)',
+                opacity: entranceAnimation ? 1 : 0,
+                transition: 'all 0.5s ease',
+                transitionDelay: '400ms'
+              }}
             >
               {loading ? "Connexion en cours..." : "Se connecter"}
             </Button>
@@ -198,7 +253,9 @@ const Login = () => {
       </div>
       
       {/* Right column: Advertising content with animated carousel */}
-      <div className="hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative">
+      <div className={`hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative transition-transform duration-700
+                      ${entranceAnimation ? 'translate-x-0' : 'translate-x-[100%]'} 
+                      ${exitAnimation ? 'translate-x-[100%]' : 'translate-x-0'}`}>
         {/* Carousel content */}
         {slides.map((slide, index) => (
           <AdContent 
