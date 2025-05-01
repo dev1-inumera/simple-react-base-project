@@ -35,8 +35,8 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 226 36% 25%;
+    --sidebar-background: 230 35% 20%;
+    --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 357 88% 39%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 226 36% 95%;
@@ -44,7 +44,7 @@
     --sidebar-border: 226 36% 85%;
     --sidebar-ring: 357 88% 39%;
 
-    /* Ajout des transitions */
+    /* Transitions */
     --transition-default: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -122,7 +122,7 @@
     @apply bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent;
   }
 
-  /* Sidebar animations */
+  /* Sidebar animations and styling */
   .sidebar-item {
     @apply relative transition-all duration-200 ease-out rounded-md overflow-hidden;
   }
@@ -177,5 +177,18 @@
     @apply relative flex items-center gap-2 p-1 bg-background/80 backdrop-blur-sm 
            border border-input/60 rounded-lg focus-within:border-primary/60 
            focus-within:ring-1 focus-within:ring-primary/30 transition-all duration-200;
+  }
+  
+  /* Add sidebar specific styles */
+  .sidebar-gradient {
+    @apply bg-gradient-to-br from-sidebar-bg-from to-sidebar-bg-to;
+  }
+  
+  .sidebar-glass {
+    @apply backdrop-blur-sm bg-white/5 border border-white/10 rounded-lg;
+  }
+  
+  .sidebar-highlight {
+    @apply bg-white/10 text-white;
   }
 }

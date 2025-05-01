@@ -108,16 +108,15 @@ export const AppSidebar: React.FC = () => {
           </div>
         )}
 
-        {/* Visual accent element */}
         <div className={cn("w-24 h-1 bg-gradient-to-r from-[#bb0c19] to-[#6e5494] rounded-full my-4", isCollapsed && "hidden")} />
       </SidebarHeader>
       
       <SidebarContent className="relative overflow-hidden">
-        {/* Enhanced background decorations */}
+        {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#bb0c19]/20 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full blur-3xl" />
         
-        {/* Enhanced floating elements */}
+        {/* Floating decorative elements */}
         <div className="absolute top-10 right-10 text-white/10 animate-pulse z-0">
           <Star size={20} />
         </div>
@@ -140,7 +139,7 @@ export const AppSidebar: React.FC = () => {
                     tooltip={item.title}
                     className={cn(
                       "transition-all duration-200 hover:bg-white/10",
-                      isActive(item.path) ? "bg-white/20 text-white font-medium" : "text-white/80"
+                      isActive(item.path) ? "bg-white/10 text-white font-medium" : "text-white/80"
                     )}
                   >
                     <Link to={item.path} className="group">
@@ -167,7 +166,7 @@ export const AppSidebar: React.FC = () => {
               isActive={isActive("/settings")}
               className={cn(
                 "transition-all duration-200 hover:bg-white/10",
-                isActive("/settings") ? "bg-white/20 text-white font-medium" : "text-white/80"
+                isActive("/settings") ? "bg-white/10 text-white font-medium" : "text-white/80"
               )}
             >
               <Link to="/settings" className="group">
@@ -192,7 +191,7 @@ export const AppSidebar: React.FC = () => {
         </SidebarMenu>
       </SidebarFooter>
 
-      {/* Stats section at the bottom - shown only in expanded state */}
+      {/* Stats section at the bottom - only in expanded state */}
       {!isCollapsed && (
         <div className="px-4 pb-4 relative z-10">
           <div className="grid grid-cols-2 gap-4 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
