@@ -57,29 +57,22 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Colonne droite: Contenu publicitaire */}
-      <div className="hidden md:flex w-1/2 h-full bg-[#272C57] overflow-hidden relative">
+      {/* Colonne droite: Contenu publicitaire avec style amélioré */}
+      <div className="hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative">
         <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white z-10">
-          <h2 className="text-4xl font-bold mb-4">Innovation digitale</h2>
-          <p className="text-xl text-center max-w-lg">
+          <h2 className="text-5xl font-bold mb-6 tracking-tight text-gradient">Innovation digitale</h2>
+          <p className="text-xl text-center max-w-lg leading-relaxed">
             Transformez votre entreprise avec nos solutions technologiques avancées.
             Notre expertise vous permet d'optimiser vos processus et d'améliorer votre compétitivité.
           </p>
-          <div className="mt-8 flex space-x-4">
-            <Button variant="outline" className="text-white border-white hover:bg-white/10">
-              Nos services
-            </Button>
-            <Button className="bg-[#bb0c19] hover:bg-[#a00914] text-white">
-              Démarrer maintenant
-            </Button>
-          </div>
         </div>
         
-        {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#bb0c19]/30 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
+        {/* Enhanced background decoration */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#bb0c19]/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/3 w-52 h-52 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-full blur-3xl" />
         
-        {/* Floating elements */}
+        {/* Enhanced floating elements */}
         <div className="absolute top-20 left-20 text-white/20 animate-pulse z-10">
           <Star size={40} />
         </div>
@@ -89,6 +82,11 @@ const Index = () => {
         <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse z-10" style={{ animationDelay: '1.5s' }}>
           <Users size={32} />
         </div>
+        
+        {/* Add more decorative elements */}
+        <div className="absolute bottom-1/4 left-1/3 w-32 h-32 border border-white/10 rounded-full" />
+        <div className="absolute top-1/4 right-1/3 w-20 h-20 border border-white/5 rounded-full" />
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-white/10 rounded-full" />
       </div>
     </div>
   );

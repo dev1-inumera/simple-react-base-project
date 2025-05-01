@@ -142,30 +142,49 @@ const Login = () => {
         </div>
       </div>
       
-      {/* Colonne droite: Contenu publicitaire */}
-      <div className="hidden md:flex w-1/2 h-full bg-[#272C57] overflow-hidden relative">
+      {/* Colonne droite: Contenu publicitaire avec style amélioré */}
+      <div className="hidden md:flex w-1/2 h-full bg-gradient-to-br from-[#272C57] to-[#1a1f3e] overflow-hidden relative">
+        {/* Enhanced content section */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-white z-10">
-          <h2 className="text-4xl font-bold mb-4">Solutions digitales</h2>
-          <p className="text-xl text-center max-w-lg">
+          <div className="relative mb-8">
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#bb0c19] to-[#6e5494] opacity-30 blur rounded-lg"></div>
+            <div className="relative px-2 py-1 bg-[#272C57] rounded-lg">
+              <h2 className="text-5xl font-bold tracking-tight">Solutions digitales</h2>
+            </div>
+          </div>
+          
+          <p className="text-xl text-center max-w-lg leading-relaxed mb-8">
             Découvrez nos solutions innovantes pour votre transformation digitale, 
             adaptées à vos besoins spécifiques. Notre équipe d'experts vous accompagne 
             dans votre évolution technologique.
           </p>
-          <div className="mt-8 flex space-x-4">
-            <Button variant="outline" className="text-white border-white hover:bg-white/10">
-              En savoir plus
-            </Button>
-            <Button className="bg-[#bb0c19] hover:bg-[#a00914] text-white">
-              Contactez-nous
-            </Button>
+          
+          {/* Visual accent element */}
+          <div className="w-24 h-1 bg-gradient-to-r from-[#bb0c19] to-[#6e5494] rounded-full my-4"></div>
+          
+          {/* Stats section */}
+          <div className="grid grid-cols-3 gap-6 mt-6 w-full max-w-md">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-[#bb0c19]">99%</p>
+              <p className="text-sm text-white/80">Satisfaction client</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-[#bb0c19]">24/7</p>
+              <p className="text-sm text-white/80">Support technique</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-[#bb0c19]">500+</p>
+              <p className="text-sm text-white/80">Projets réalisés</p>
+            </div>
           </div>
         </div>
         
-        {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#bb0c19]/30 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
+        {/* Enhanced background decorations */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#bb0c19]/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/3 w-52 h-52 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-full blur-3xl" />
         
-        {/* Floating elements */}
+        {/* Enhanced floating elements */}
         <div className="absolute top-20 left-20 text-white/20 animate-pulse z-10">
           <Star size={40} />
         </div>
@@ -175,6 +194,15 @@ const Login = () => {
         <div className="absolute top-1/3 right-1/4 text-white/10 animate-pulse z-10" style={{ animationDelay: '1.5s' }}>
           <Users size={32} />
         </div>
+        
+        {/* Add more decorative elements */}
+        <div className="absolute bottom-1/4 left-1/3 w-32 h-32 border border-white/10 rounded-full" />
+        <div className="absolute top-1/4 right-1/3 w-20 h-20 border border-white/5 rounded-full" />
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-white/10 rounded-full" />
+        
+        {/* Additional decorative elements */}
+        <div className="absolute bottom-10 left-10 h-20 w-20 border border-white/5 rounded-md rotate-12" />
+        <div className="absolute top-10 right-10 h-16 w-16 border border-white/5 rounded-md -rotate-12" />
       </div>
     </div>
   );

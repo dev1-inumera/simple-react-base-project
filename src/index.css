@@ -117,6 +117,11 @@
     @apply transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98];
   }
 
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent;
+  }
+
   /* Sidebar animations */
   .sidebar-item {
     @apply relative transition-all duration-200 ease-out rounded-md overflow-hidden;
