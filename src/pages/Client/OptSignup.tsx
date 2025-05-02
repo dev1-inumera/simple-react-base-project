@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { Eye, EyeOff } from "lucide-react";
 
 const BUSINESS_SECTORS = [
   "Commerce",
@@ -36,11 +38,17 @@ const ClientOptSignup = () => {
     companyName: "",
     companyAddress: "",
     businessSector: "",
+    customBusinessSector: "",
     role: "",
+    customRole: "",
     phone: "",
-    email: ""
+    email: "",
+    password: "",
+    confirmPassword: ""
   });
-  
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,10 +63,20 @@ const ClientOptSignup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation checks
     if (!formData.businessSector) {
       toast({
         title: "Erreur",
         description: "Veuillez sélectionner un secteur d'activité.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (formData.businessSector === "Autre" && !formData.customBusinessSector) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez préciser votre secteur d'activité.",
         variant: "destructive",
       });
       return;
@@ -73,20 +91,73 @@ const ClientOptSignup = () => {
       return;
     }
     
+    if (formData.role === "Autre" && !formData.customRole) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez préciser votre fonction au sein de la société.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (formData.password.length < 6) {
+      toast({
+        title: "Erreur",
+        description: "Le mot de passe doit contenir au moins 6 caractères.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
     try {
-      // TODO: Implement actual submission logic
+      // Extract the first name and last name from the full name
+      const nameParts = formData.fullName.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
       
-      // For now, just show success and redirect
-      toast({
-        title: "Inscription réussie",
-        description: "Votre demande d'inscription a été enregistrée avec succès.",
+      // Determine the final business sector and role values
+      const finalBusinessSector = formData.businessSector === "Autre" ? formData.customBusinessSector : formData.businessSector;
+      const finalRole = formData.role === "Autre" ? formData.customRole : formData.role;
+      
+      // Sign up with Supabase
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            phone: formData.phone,
+            address: formData.companyAddress,
+            business_sector: finalBusinessSector,
+            company_name: formData.companyName,
+            role: 'client', // User role in the system (not job role)
+            manager_name: formData.fullName,
+          }
+        }
       });
       
-      // Redirect to homepage after success
+      if (error) throw error;
+      
+      toast({
+        title: "Inscription réussie",
+        description: "Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.",
+      });
+      
+      // Redirect to login page
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 2000);
     } catch (error: any) {
       toast({
@@ -185,6 +256,21 @@ const ClientOptSignup = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                
+                {formData.businessSector === "Autre" && (
+                  <div className="mt-2">
+                    <Input
+                      id="customBusinessSector"
+                      name="customBusinessSector"
+                      value={formData.customBusinessSector}
+                      onChange={handleChange}
+                      placeholder="Précisez votre secteur"
+                      disabled={loading}
+                      required
+                      className="bg-white/80 backdrop-blur-sm border-input/60"
+                    />
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Fonction dans la société</Label>
@@ -204,6 +290,21 @@ const ClientOptSignup = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                
+                {formData.role === "Autre" && (
+                  <div className="mt-2">
+                    <Input
+                      id="customRole"
+                      name="customRole"
+                      value={formData.customRole}
+                      onChange={handleChange}
+                      placeholder="Précisez votre fonction"
+                      disabled={loading}
+                      required
+                      className="bg-white/80 backdrop-blur-sm border-input/60"
+                    />
+                  </div>
+                )}
               </div>
             </div>
             
@@ -236,6 +337,53 @@ const ClientOptSignup = () => {
               </div>
             </div>
             
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={loading}
+                    required
+                    className="bg-white/80 backdrop-blur-sm border-input/60 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    disabled={loading}
+                    required
+                    className="bg-white/80 backdrop-blur-sm border-input/60 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+            
             <Button 
               type="submit" 
               className="w-full shadow-md hover:shadow-lg transition-all" 
@@ -245,10 +393,18 @@ const ClientOptSignup = () => {
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
+        <CardFooter className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground text-center">
             En vous inscrivant, vous acceptez nos conditions générales d'utilisation
           </p>
+          <Button 
+            variant="link" 
+            className="text-sm"
+            onClick={() => navigate('/login')}
+            disabled={loading}
+          >
+            Déjà inscrit ? Connectez-vous
+          </Button>
         </CardFooter>
       </Card>
       
