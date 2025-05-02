@@ -21,6 +21,7 @@ import Settings from '@/pages/Settings';
 import PaymentSuccess from '@/pages/Payment/PaymentSuccess';
 import PaymentFailure from '@/pages/Payment/PaymentFailure';
 import PaymentHistory from '@/pages/Admin/PaymentHistory';
+import ClientOptSignup from '@/pages/Client/OptSignup';
 import { UserRole } from '@/types';
 
 import './App.css';
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/client/opt/signup" element={<ClientOptSignup />} />
         <Route
           path="/dashboard"
           element={
