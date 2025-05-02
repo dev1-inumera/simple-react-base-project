@@ -1,0 +1,148 @@
+
+# ----------------------------------------------------------------------
+# Configuration optimisée .htaccess pour React SPA en production
+# ----------------------------------------------------------------------
+
+# Activation du moteur de réécriture
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Rediriger le trafic HTTP vers HTTPS (décommenter si nécessaire)
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # Rediriger www vers non-www (décommenter si nécessaire)
+  # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+  
+  # Ne pas appliquer les règles aux fichiers/dossiers existants
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  
+  # Pour une SPA React, rediriger toutes les requêtes non-fichiers vers index.html
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Compression et mise en cache
+# ----------------------------------------------------------------------
+
+# Compression Gzip
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/woff
+  AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+# Mise en cache des ressources statiques
+<IfModule mod_expires.c>
+  ExpiresActive On
+  
+  # Mise en cache par défaut - 1 mois
+  ExpiresDefault "access plus 1 month"
+  
+  # HTML - pas de mise en cache
+  ExpiresByType text/html "access plus 0 seconds"
+  
+  # CSS et JS - 1 an (Vite/Webpack ajoute un hash dans le nom de fichier)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  
+  # Images - 6 mois
+  ExpiresByType image/jpeg "access plus 6 months"
+  ExpiresByType image/png "access plus 6 months"
+  ExpiresByType image/gif "access plus 6 months"
+  ExpiresByType image/svg+xml "access plus 6 months"
+  ExpiresByType image/webp "access plus 6 months"
+  ExpiresByType image/avif "access plus 6 months"
+  
+  # Polices - 1 an
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  
+  # Favicon et fichiers de manifeste - 1 mois
+  ExpiresByType image/x-icon "access plus 1 month"
+  ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+  ExpiresByType application/manifest+json "access plus 1 week"
+</IfModule>
+
+# Ajouter des en-têtes de cache pour les navigateurs modernes
+<IfModule mod_headers.c>
+  # Désactiver la détection MIME pour plus de sécurité
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Protection contre le clickjacking
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Protection XSS pour les navigateurs modernes
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Cache-Control pour les ressources avec hash (CSS/JS générés par Vite/Webpack)
+  <FilesMatch "\.([0-9a-f]{8,})\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  
+  # Cache-Control pour les images
+  <FilesMatch "\.(jpg|jpeg|png|gif|ico|svg|webp|avif)$">
+    Header set Cache-Control "public, max-age=15552000"
+  </FilesMatch>
+  
+  # Cache-Control pour les polices
+  <FilesMatch "\.(ttf|otf|woff|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Performance et sécurité
+# ----------------------------------------------------------------------
+
+# Désactiver l'indexation des répertoires
+Options -Indexes
+
+# Interdire l'accès aux fichiers sensibles
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|in[ci]|log|orig|psd|sh|sql|sw[op])|~)$">
+  # Apache < 2.3
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+    Satisfy All
+  </IfModule>
+  
+  # Apache ≥ 2.3
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+
+# Empêcher l'accès aux fichiers .env, .git, etc.
+<FilesMatch "^(\.env|\.git|package\.json|package-lock\.json|composer\.json|composer\.lock|\.babelrc)$">
+  # Apache < 2.3
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+    Satisfy All
+  </IfModule>
+  
+  # Apache ≥ 2.3
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
