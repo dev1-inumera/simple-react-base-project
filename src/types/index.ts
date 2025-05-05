@@ -1,4 +1,3 @@
-
 export enum UserRole {
   CLIENT = "client",
   AGENT = "agent",
@@ -15,6 +14,10 @@ export interface User {
   birthDate?: string;
   role: UserRole;
   createdAt: string;
+  businessSector?: string;
+  companyName?: string;
+  managerName?: string;
+  companyRole?: string;
 }
 
 export interface OfferExtra {

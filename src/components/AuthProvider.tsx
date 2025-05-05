@@ -85,6 +85,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             birthDate: data.birth_date,
             role: data.role as UserRole,
             createdAt: data.created_at,
+            // Ajout de nouvelles propriétés récupérées du profil
+            businessSector: data.business_sector,
+            companyName: data.company_name,
+            managerName: data.manager_name,
+            companyRole: data.company_role,
           },
           session,
           isLoading: false,

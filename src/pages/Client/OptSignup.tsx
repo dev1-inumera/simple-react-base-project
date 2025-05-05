@@ -140,6 +140,7 @@ const ClientOptSignup = () => {
         password: formData.password,
         options: {
           data: {
+            // Stockage de toutes les données dans les métadonnées
             first_name: firstName,
             last_name: lastName,
             phone: formData.phone,
@@ -148,6 +149,7 @@ const ClientOptSignup = () => {
             company_name: formData.companyName,
             role: 'client', // User role in the system (not job role)
             manager_name: formData.fullName,
+            company_role: finalRole // Ajout du rôle dans la société
           }
         }
       });
@@ -189,7 +191,7 @@ const ClientOptSignup = () => {
       <div className="absolute inset-0 bg-black/60" />
       
       <div className="absolute top-0 left-0 p-4 z-10">
-        <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-10" />
+        <img src="https://i-numera.com/lovable-uploads/b24ee520-7478-4b85-b844-07dbec409cf5.png" alt="i-numa logo" className="h-10" />
       </div>
       
       <Card className="w-full max-w-2xl z-10 bg-white/80 backdrop-blur-md shadow-xl">
@@ -412,7 +414,7 @@ const ClientOptSignup = () => {
       {/* Footer with logo */}
       <div className="absolute bottom-4 right-4 z-10 flex items-center">
         <span className="text-white text-sm mr-2">Développé par</span>
-        <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-6" />
+        <img src="https://i-numera.com/lovable-uploads/b24ee520-7478-4b85-b844-07dbec409cf5.png" alt="i-numa logo" className="h-6" />
       </div>
     </div>
   );
