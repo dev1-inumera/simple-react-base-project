@@ -369,6 +369,7 @@ export type Database = {
           birth_date: string | null
           business_sector: string | null
           company_name: string | null
+          company_role: string | null
           created_at: string | null
           email: string | null
           email_notifications: boolean | null
@@ -388,6 +389,7 @@ export type Database = {
           birth_date?: string | null
           business_sector?: string | null
           company_name?: string | null
+          company_role?: string | null
           created_at?: string | null
           email?: string | null
           email_notifications?: boolean | null
@@ -407,6 +409,7 @@ export type Database = {
           birth_date?: string | null
           business_sector?: string | null
           company_name?: string | null
+          company_role?: string | null
           created_at?: string | null
           email?: string | null
           email_notifications?: boolean | null
