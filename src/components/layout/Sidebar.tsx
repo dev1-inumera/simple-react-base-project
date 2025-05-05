@@ -96,11 +96,10 @@ export const AppSidebar: React.FC = () => {
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="p-4">
-        <div className={cn("flex items-center space-x-2", isCollapsed && "hidden")}>
-          <div className="absolute top-8 left-8 z-10">
+        <div className="flex items-center space-x-2">
+          <div className={cn("absolute top-8 left-8 z-10", isCollapsed && "hidden")}>
           <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-10" />
         </div>
-          
           <SidebarTrigger className="hover:bg-accent/5 transition-colors duration-200" />
         </div>
         {auth.user && (
