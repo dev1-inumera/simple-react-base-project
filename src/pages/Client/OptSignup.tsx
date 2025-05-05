@@ -140,7 +140,7 @@ const ClientOptSignup = () => {
         password: formData.password,
         options: {
           data: {
-            // Stockage de toutes les données dans les métadonnées
+            // Storing all data in metadata
             first_name: firstName,
             last_name: lastName,
             phone: formData.phone,
@@ -149,7 +149,7 @@ const ClientOptSignup = () => {
             company_name: formData.companyName,
             role: 'client', // User role in the system (not job role)
             manager_name: formData.fullName,
-            company_role: finalRole // Ajout du rôle dans la société
+            company_role: finalRole // Company role explicitly added
           }
         }
       });

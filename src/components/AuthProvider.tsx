@@ -73,6 +73,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (data) {
+        // Instead of directly accessing company_role, we'll use the raw user metadata
+        // from the session as a fallback since that's where it gets stored during signup
+        const companyRole = data.company_role || 
+                           session.user.user_metadata?.company_role || 
+                           null;
+
         setAuth({
           user: {
             id: userId,
@@ -84,11 +90,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             birthDate: data.birth_date,
             role: data.role as UserRole,
             createdAt: data.created_at,
-            // Access the company_role property safely with optional chaining
             businessSector: data.business_sector,
             companyName: data.company_name,
             managerName: data.manager_name,
-            companyRole: data.company_role || null, // Add fallback value if property doesn't exist
+            companyRole: companyRole, // Use the resolved company role
           },
           session,
           isLoading: false,
