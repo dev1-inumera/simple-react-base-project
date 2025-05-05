@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Navigate } from "react-router-dom";
@@ -46,16 +45,13 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, description, f
       </div>
       
       <div className="absolute top-0 left-0 p-4 z-10">
-        <h1 className="text-2xl font-bold">
-          <span className="text-[#bb0c19]">i</span>
-          <span className="text-white">-numa</span>
-        </h1>
+        <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-10" />
       </div>
       
       {/* Footer with logo */}
       <div className="absolute bottom-4 right-4 z-10 flex items-center">
         <span className="text-white text-sm mr-2">Développé par</span>
-        <img src="/lovable-uploads/bd88a5bf-3502-442c-bfda-cab3f421f25e.png" alt="i-numera logo" className="h-6" />
+        <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-6" />
       </div>
       
       <Card className="w-full max-w-md z-10 bg-white/70 backdrop-blur-md shadow-xl">

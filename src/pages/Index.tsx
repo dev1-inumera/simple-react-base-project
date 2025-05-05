@@ -101,24 +101,18 @@ const Index = () => {
         <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
         
         <div className="absolute top-8 left-8 z-10">
-          <h1 className="text-2xl font-bold">
-            <span className="text-[#bb0c19]">i</span>
-            <span className="text-[#272C57]">-numa</span>
-          </h1>
+          <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-10" />
         </div>
 
         {/* Footer with logo - moved to the left column left side */}
         <div className="absolute bottom-4 left-4 z-10 flex items-center">
           <span className="text-gray-600 text-sm mr-2">Développé par</span>
-          <img src="/lovable-uploads/bd88a5bf-3502-442c-bfda-cab3f421f25e.png" alt="i-numera logo" className="h-6" />
+          <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-6" />
         </div>
 
         <div className="w-full max-w-md z-10">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold mb-4">
-              <span className="text-[#bb0c19]">i</span>
-              <span className="text-[#272C57]">-numa</span>
-            </h1>
+            <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-16 mx-auto mb-4" />
             <p className="text-xl text-gray-600 mb-8">Solutions innovantes pour votre transformation digitale</p>
           </div>
           <div className="flex flex-col gap-4">

@@ -79,7 +79,7 @@ const PaymentSuccess = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md mx-auto mb-8">
         <img 
-          src="/images/inum.svg" 
+          src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" 
           alt="i-numa logo" 
           className="h-14 mx-auto"
         />
