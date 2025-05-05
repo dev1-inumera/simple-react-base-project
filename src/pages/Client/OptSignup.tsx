@@ -7,8 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@supabase/supabase-js";
 import { Eye, EyeOff } from "lucide-react";
+
+// Create a public client specifically for signup that doesn't require authentication
+const SUPABASE_URL = "https://wprlkplzlhyrphbcaalc.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcmxrcGx6bGh5cnBoYmNhYWxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2MTA5MjQsImV4cCI6MjA2MTE4NjkyNH0.BkmefUSRt048r0o8h4US_4ZUrEicJ2iDm94FTfPi7MQ";
+const supabasePublic = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const BUSINESS_SECTORS = [
   "Commerce",
@@ -130,8 +135,8 @@ const ClientOptSignup = () => {
       const finalBusinessSector = formData.businessSector === "Autre" ? formData.customBusinessSector : formData.businessSector;
       const finalRole = formData.role === "Autre" ? formData.customRole : formData.role;
       
-      // Sign up with Supabase's public auth API
-      const { error } = await supabase.auth.signUp({
+      // Sign up with Supabase's public auth API using the public client
+      const { error } = await supabasePublic.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
