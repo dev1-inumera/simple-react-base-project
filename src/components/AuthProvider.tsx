@@ -73,10 +73,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (data) {
-        // Instead of directly accessing company_role, we'll use the raw user metadata
-        // from the session as a fallback since that's where it gets stored during signup
-        const companyRole = data.company_role || 
-                           session.user.user_metadata?.company_role || 
+        // Use nullish coalescing operator to handle the case where company_role might be undefined
+        const companyRole = data.company_role ?? 
+                           session.user.user_metadata?.company_role ?? 
                            null;
 
         setAuth({
