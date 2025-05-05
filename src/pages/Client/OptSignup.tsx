@@ -130,7 +130,7 @@ const ClientOptSignup = () => {
       const finalBusinessSector = formData.businessSector === "Autre" ? formData.customBusinessSector : formData.businessSector;
       const finalRole = formData.role === "Autre" ? formData.customRole : formData.role;
       
-      // Sign up with Supabase
+      // Sign up with Supabase's public auth API
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
