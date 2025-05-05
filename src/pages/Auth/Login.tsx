@@ -69,7 +69,7 @@ const Login = () => {
         {/* Footer with logo - moved to the left column left side */}
         <div className="absolute bottom-4 left-4 z-10 flex items-center">
           <span className="text-gray-600 text-sm mr-2">Développé par</span>
-          <img src="/lovable-uploads/7250faee-48f7-4ce0-ad3e-ce5cbf2f4084.png" alt="i-numa logo" className="h-6" />
+          <img src="https://i-numera.com/lovable-uploads/b24ee520-7478-4b85-b844-07dbec409cf5.png" alt="i-numera logo" className="h-7" />
         </div>
 
         <div className="w-full max-w-md z-10">
