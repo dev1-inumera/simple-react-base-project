@@ -56,7 +56,7 @@ const QuoteDetailPage: React.FC = () => {
       setProcessingAction(true);
       await updateQuoteStatus(id, status);
       
-      // If an admin approves the quote, send an automatic email with payment link
+      // Si un admin approuve le devis, envoyer un email automatique avec lien de paiement
       if (status === "approved" && hasRole(UserRole.ADMIN)) {
         try {
           console.log("Envoi automatique d'email pour devis approuvé:", id);

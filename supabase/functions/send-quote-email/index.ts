@@ -27,6 +27,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Fonction send-quote-email appelée");
+    
     const { 
       quoteId, 
       clientEmail, 
@@ -36,12 +38,12 @@ serve(async (req) => {
       htmlContent 
     }: QuoteEmailRequest = await req.json();
 
+    console.log("Données reçues:", { quoteId, clientEmail, clientName, quoteAmount, paymentLink, hasHtmlContent: !!htmlContent });
+
     if (!clientEmail || !paymentLink) {
+      console.error("Données manquantes:", { clientEmail, paymentLink });
       throw new Error("Email du client ou lien de paiement manquant");
     }
-
-    console.log("Préparation de l'email pour:", clientEmail);
-    console.log("Contenu HTML reçu:", htmlContent ? "Oui (personnalisé)" : "Non");
 
     // Format the amount for display
     const formattedAmount = new Intl.NumberFormat('fr-FR', {
@@ -64,9 +66,9 @@ serve(async (req) => {
       </div>
     `;
 
+    console.log("Tentative d'envoi via SendGrid - Email:", clientEmail);
+    
     try {
-      console.log("Tentative d'envoi via SendGrid - Email:", clientEmail);
-      
       // Send via SendGrid directly as a single send
       const msg = {
         to: clientEmail,
@@ -75,7 +77,7 @@ serve(async (req) => {
         html: emailHtml,
       };
       
-      console.log("Préparation de l'envoi via SendGrid:", JSON.stringify(msg, null, 2));
+      console.log("Envoi via SendGrid - Message préparé");
       await sgMail.send(msg);
       console.log("Email envoyé avec succès via SendGrid");
       
