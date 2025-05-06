@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { EmailService, EmailStats, EmailActivity } from "@/services/EmailService";
+import { EmailService } from "@/services/EmailService";
+import type { EmailStats as EmailStatsType, EmailActivity } from "@/services/EmailService";
 import { EmailStatsCard, EmailChartCard } from "@/components/dashboard/EmailStatsCard";
 import { EmailActivityTable } from "@/components/dashboard/EmailActivityTable";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
@@ -13,11 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format, addDays, addWeeks, addMonths, subDays, subWeeks, subMonths } from "date-fns";
 import { fr } from 'date-fns/locale';
-import { Mail, Calendar as CalendarIcon, BarChart2, PieChart, RefreshCw } from "lucide-react";
+import { Mail, Calendar as CalendarIcon, BarChart2, PieChart, RefreshCw, MousePointerClick } from "lucide-react";
 
 const EmailStats: React.FC = () => {
   const { toast } = useToast();
-  const [statsData, setStatsData] = useState<EmailStats[]>([]);
+  const [statsData, setStatsData] = useState<EmailStatsType[]>([]);
   const [activityData, setActivityData] = useState<EmailActivity[]>([]);
   const [summaryStats, setSummaryStats] = useState<any>({
     totalSent: 0,
@@ -144,6 +145,16 @@ const EmailStats: React.FC = () => {
     loadStats();
     loadActivity();
   }, [dateRange, aggregation]);
+
+  // Handle calendar date selection to ensure both from and to dates are set
+  const handleCalendarSelect = (range: { from?: Date; to?: Date } | undefined) => {
+    if (range?.from) {
+      setDateRange({
+        from: range.from,
+        to: range.to || range.from // If to is undefined, use from as the end date
+      });
+    }
+  };
   
   return (
     <div className="space-y-6">
@@ -177,11 +188,7 @@ const EmailStats: React.FC = () => {
                 mode="range"
                 defaultMonth={dateRange.from}
                 selected={dateRange}
-                onSelect={(range) => {
-                  if (range?.from && range?.to) {
-                    setDateRange(range);
-                  }
-                }}
+                onSelect={handleCalendarSelect}
               />
             </PopoverContent>
           </Popover>
