@@ -16,7 +16,7 @@ serve(async (req) => {
   }
 
   try {
-    const { statsType, startDate, endDate, aggregatedBy, categories } = await req.json();
+    const { statsType, startDate, endDate, aggregatedBy, categories, campaignId } = await req.json();
     
     // Default to global stats if not specified
     const endpoint = getStatsEndpoint(statsType);
@@ -30,8 +30,15 @@ serve(async (req) => {
     
     // Add optional params
     if (aggregatedBy) queryParams.append("aggregated_by", aggregatedBy);
-    if (categories && categories.length > 0 && statsType === 'categories') {
+    
+    // Handle categories (used for campaigns)
+    if (categories && categories.length > 0) {
       categories.forEach(category => queryParams.append("categories", category));
+    }
+    
+    // If a specific campaignId is provided, add it as a category
+    if (campaignId) {
+      queryParams.append("categories", campaignId);
     }
     
     // Make request to SendGrid API

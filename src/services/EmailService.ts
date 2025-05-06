@@ -32,6 +32,7 @@ export interface SendgridStatsParams {
   endDate?: string;
   aggregatedBy?: 'day' | 'week' | 'month';
   categories?: string[];
+  campaignId?: string;
 }
 
 export interface SendgridActivityParams {
@@ -50,7 +51,8 @@ export const EmailService = {
           startDate: params.startDate || getDefaultStartDate(),
           endDate: params.endDate,
           aggregatedBy: params.aggregatedBy || 'day',
-          categories: params.categories
+          categories: params.categories,
+          campaignId: params.campaignId
         }
       });
 
@@ -64,6 +66,14 @@ export const EmailService = {
       console.error('Failed to fetch email stats:', error);
       throw error;
     }
+  },
+  
+  async getCampaignStats(campaignId: string, params: Omit<SendgridStatsParams, 'campaignId'> = {}): Promise<EmailStats[]> {
+    return this.getStats({
+      ...params,
+      statsType: 'categories',
+      campaignId
+    });
   },
 
   async getEmailActivity(params: SendgridActivityParams = {}): Promise<{messages: EmailActivity[], next_cursor: string | null}> {
