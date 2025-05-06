@@ -43,7 +43,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
   const [paymentInfo, setPaymentInfo] = useState<any>(null);
   const [client, setClient] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [processingAction, setProcessingAction] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
@@ -83,7 +82,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
     loadQuoteDetails();
   }, [quote]);
 
-  // Use the provided onStatusUpdate function if available, otherwise use the local handler
   const handleStatusUpdate = async (status: string) => {
     if (onStatusUpdate) {
       await onStatusUpdate(status);
@@ -244,7 +242,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
   };
 
   const renderStatusActions = () => {
-    const buttonProcessing = processingAction || processingAction;
+    const buttonProcessing = processingAction || processingPayment;
     
     if (isAdmin && quote.status === "pending") {
       return (

@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface EmailStats {
@@ -95,6 +94,35 @@ export const EmailService = {
       return data;
     } catch (error) {
       console.error('Failed to fetch email activity:', error);
+      throw error;
+    }
+  },
+  
+  // Add new SendGrid specific method
+  async sendQuoteEmail(data: {
+    to: string;
+    subject: string;
+    html: string;
+    from?: string;
+  }) {
+    try {
+      const { data: result, error } = await supabase.functions.invoke('sendgrid-send', {
+        body: {
+          to: data.to,
+          subject: data.subject,
+          html: data.html,
+          from: data.from || 'devis@i-numera.com'
+        }
+      });
+
+      if (error) {
+        console.error('Error sending email with SendGrid:', error);
+        throw new Error(error.message);
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Failed to send email with SendGrid:', error);
       throw error;
     }
   },

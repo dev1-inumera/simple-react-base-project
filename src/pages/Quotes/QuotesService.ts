@@ -387,9 +387,10 @@ export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
     // Create a payment link for the quote
     const clientFullName = `${clientData.first_name || ""} ${clientData.last_name || ""}`.trim() || "Client";
     
-    const totalAmount = quoteDetails.total_amount || 0;
+    // Use totalAmount property instead of total_amount
+    const totalAmount = quoteDetails.totalAmount || 0;
     
-    // Generate a payment link using our Stripe API
+    // Generate a payment link using our payment API
     const paymentLinkResponse = await createPaymentLink(
       totalAmount,
       clientFullName,
