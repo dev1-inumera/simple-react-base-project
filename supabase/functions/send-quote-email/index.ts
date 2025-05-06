@@ -27,7 +27,11 @@ serve(async (req) => {
   }
 
   try {
-    console.log("Fonction send-quote-email appelée");
+    console.log("=== Fonction send-quote-email démarrée ===");
+    
+    // Parse request body
+    const requestData = await req.json();
+    console.log("Données reçues (brut):", JSON.stringify(requestData, null, 2));
     
     const { 
       quoteId, 
@@ -36,13 +40,26 @@ serve(async (req) => {
       quoteAmount, 
       paymentLink,
       htmlContent 
-    }: QuoteEmailRequest = await req.json();
+    } = requestData as QuoteEmailRequest;
 
-    console.log("Données reçues:", { quoteId, clientEmail, clientName, quoteAmount, paymentLink, hasHtmlContent: !!htmlContent });
+    console.log("Données extraites:", { 
+      quoteId, 
+      clientEmail, 
+      clientName, 
+      quoteAmount, 
+      paymentLinkExists: !!paymentLink,
+      htmlContentExists: !!htmlContent
+    });
 
-    if (!clientEmail || !paymentLink) {
-      console.error("Données manquantes:", { clientEmail, paymentLink });
-      throw new Error("Email du client ou lien de paiement manquant");
+    // Validate required fields
+    if (!clientEmail) {
+      console.error("Email client manquant");
+      throw new Error("Email du client manquant");
+    }
+    
+    if (!paymentLink) {
+      console.error("Lien de paiement manquant");
+      throw new Error("Lien de paiement manquant");
     }
 
     // Format the amount for display
@@ -66,10 +83,10 @@ serve(async (req) => {
       </div>
     `;
 
-    console.log("Tentative d'envoi via SendGrid - Email:", clientEmail);
+    console.log("Email préparé, tentative d'envoi à:", clientEmail);
     
     try {
-      // Send via SendGrid directly as a single send
+      // Préparer l'email
       const msg = {
         to: clientEmail,
         from: 'devis@i-numera.com',
@@ -77,20 +94,32 @@ serve(async (req) => {
         html: emailHtml,
       };
       
-      console.log("Envoi via SendGrid - Message préparé");
+      console.log("Message préparé:", {
+        to: msg.to,
+        from: msg.from,
+        subject: msg.subject,
+        htmlLength: msg.html.length
+      });
+      
+      // Envoi via SendGrid
       await sgMail.send(msg);
       console.log("Email envoyé avec succès via SendGrid");
       
-      return new Response(JSON.stringify({ success: true, provider: "sendgrid" }), {
+      return new Response(JSON.stringify({ 
+        success: true, 
+        provider: "sendgrid",
+        sentTo: clientEmail
+      }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-    } catch (sendgridError) {
+    } catch (sendgridError: any) {
       console.error("Erreur SendGrid:", sendgridError);
+      console.error("Détails de l'erreur:", JSON.stringify(sendgridError.response?.body || {}, null, 2));
       throw new Error(`Erreur d'envoi d'email: ${sendgridError.message}`);
     }
   } catch (error: any) {
-    console.error("Erreur dans la fonction send-quote-email:", error);
+    console.error("Erreur générale dans la fonction send-quote-email:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
