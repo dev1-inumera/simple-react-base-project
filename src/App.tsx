@@ -23,6 +23,7 @@ import PaymentFailure from '@/pages/Payment/PaymentFailure';
 import PaymentHistory from '@/pages/Admin/PaymentHistory';
 import EmailStats from '@/pages/Admin/EmailStats';
 import ClientOptSignup from '@/pages/Client/OptSignup';
+import MailSend from '@/pages/Dev/MailSend';
 import { UserRole } from '@/types';
 
 import './App.css';
@@ -143,6 +144,18 @@ function App() {
             <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
               <MainLayout>
                 <EmailStats />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Developer tools routes - admin only */}
+        <Route
+          path="/dev/mail/send"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
+              <MainLayout>
+                <MailSend />
               </MainLayout>
             </ProtectedRoute>
           }
