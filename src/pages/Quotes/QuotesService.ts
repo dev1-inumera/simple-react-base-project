@@ -384,11 +384,16 @@ export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
       throw new Error("Les informations du client sont incomplètes ou indisponibles");
     }
 
+    // Fetch items for the quote
+    const quoteItems = await fetchQuoteItems(quoteDetails.offerPlateId);
+    
     // Create a payment link for the quote
     const clientFullName = `${clientData.first_name || ""} ${clientData.last_name || ""}`.trim() || "Client";
     
-    // Use totalAmount property instead of total_amount
     const totalAmount = quoteDetails.totalAmount || 0;
+    
+    // Récupérer les informations de paiement si elles existent
+    const paymentInfo = await fetchPaymentInfoByQuoteId(quoteId).catch(() => null);
     
     // Generate a payment link using our payment API
     const paymentLinkResponse = await createPaymentLink(
@@ -409,14 +414,26 @@ export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
     
     const paymentLink = paymentLinkResponse.data.paymentLink;
     
-    // Send the email via our edge function
+    // Import the HTML generator to get the complete design
+    const generateHTMLContent = (await import('../Quotes/components/QuoteHTML')).default;
+    
+    // Generate the HTML content with the exact same design as the preview
+    const htmlContent = generateHTMLContent(
+      quoteDetails, 
+      quoteItems, 
+      clientFullName,
+      paymentInfo
+    );
+
+    // Send the email via our edge function with the complete HTML design
     const { data: emailResult, error: emailError } = await supabase.functions.invoke('send-quote-email', {
       body: {
         quoteId,
         clientEmail: clientData.email,
         clientName: clientFullName,
         quoteAmount: totalAmount,
-        paymentLink
+        paymentLink,
+        htmlContent // Pass the complete HTML design
       }
     });
     

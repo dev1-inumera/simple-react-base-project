@@ -1,3 +1,4 @@
+
 const generateHTMLContent = (quote, items, clientName, paymentInfo) => {
     const totalHT = items.reduce((acc, item) => acc + (item.offer.priceMonthly * item.quantity), 0);
     const tva = totalHT * 0.2;
@@ -74,3 +75,4 @@ const generateHTMLContent = (quote, items, clientName, paymentInfo) => {
     `;
   };
   
+export default generateHTMLContent;

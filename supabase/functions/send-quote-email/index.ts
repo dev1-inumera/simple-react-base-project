@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import * as sendgrid from "npm:@sendgrid/mail@7.7.0";
 
@@ -17,6 +16,7 @@ interface QuoteEmailRequest {
   clientName: string;
   quoteAmount: number;
   paymentLink: string;
+  htmlContent?: string;
 }
 
 serve(async (req) => {
@@ -31,7 +31,8 @@ serve(async (req) => {
       clientEmail, 
       clientName, 
       quoteAmount, 
-      paymentLink 
+      paymentLink,
+      htmlContent 
     }: QuoteEmailRequest = await req.json();
 
     if (!clientEmail || !paymentLink) {
@@ -43,8 +44,10 @@ serve(async (req) => {
       style: 'currency',
       currency: 'EUR'
     }).format(quoteAmount);
-
-    const htmlContent = `
+    
+    // If we have the complete HTML content with the quote design, use it as the email body
+    // Otherwise, fall back to the simple template
+    let emailHtml = htmlContent || `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <img src="https://wprlkplzlhyrphbcaalc.supabase.co/storage/v1/object/public/assets/i-numera-logo.png" alt="i-numera" style="display: block; margin: 20px auto; max-width: 200px;">
         
@@ -76,7 +79,7 @@ serve(async (req) => {
         to: clientEmail,
         from: 'devis@i-numera.com',
         subject: `Votre devis #${quoteId.substring(0, 8)} est approuvé`,
-        html: htmlContent,
+        html: emailHtml,
       };
       
       console.log("Tentative d'envoi via SendGrid:", msg);
