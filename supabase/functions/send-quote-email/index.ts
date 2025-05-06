@@ -1,14 +1,14 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
-import { SendGrid } from "npm:@sendgrid/mail@7.7.0";
+import * as sendgrid from "npm:@sendgrid/mail@7.7.0";
 
 // Initialize Resend as primary email provider
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 // Initialize SendGrid as backup email provider
-const sendgrid = SendGrid;
-sendgrid.setApiKey(Deno.env.get("SENDGRID_API_KEY") || "");
+const sgMail = sendgrid.default;
+sgMail.setApiKey(Deno.env.get("SENDGRID_API_KEY") || "");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -102,7 +102,7 @@ serve(async (req) => {
           html: htmlContent,
         };
         
-        await sendgrid.send(msg);
+        await sgMail.send(msg);
         
         console.log("Email sent successfully via SendGrid");
         

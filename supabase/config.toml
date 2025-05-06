@@ -12,3 +12,9 @@ verify_jwt = true
 
 [functions.sendgrid-activity]
 verify_jwt = true
+
+[functions.send-quote-email]
+verify_jwt = true
+
+[functions.sendgrid-send]
+verify_jwt = true

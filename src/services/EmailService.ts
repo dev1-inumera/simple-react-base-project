@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface EmailStats {
@@ -98,12 +99,13 @@ export const EmailService = {
     }
   },
   
-  // Add new SendGrid specific method
+  // SendGrid direct email method
   async sendQuoteEmail(data: {
     to: string;
     subject: string;
     html: string;
     from?: string;
+    text?: string;
   }) {
     try {
       const { data: result, error } = await supabase.functions.invoke('sendgrid-send', {
@@ -111,6 +113,7 @@ export const EmailService = {
           to: data.to,
           subject: data.subject,
           html: data.html,
+          text: data.text,
           from: data.from || 'devis@i-numera.com'
         }
       });
