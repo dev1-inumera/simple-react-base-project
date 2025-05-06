@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { createFolder } from "../FoldersService";
 import { useAuth } from "@/lib/auth";
 import { fetchClientProfiles } from "@/pages/Marketplace/MarketplacePlateService";
+import { UserRole } from "@/types";
 
 interface CreateFolderDialogProps {
   open: boolean;
@@ -52,16 +53,18 @@ const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
   onSuccess,
 }) => {
   const { toast } = useToast();
-  const { auth } = useAuth();
+  const { auth, hasRole } = useAuth();
   const [clients, setClients] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const isAgent = hasRole([UserRole.AGENT, UserRole.ADMIN]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      clientId: "",
+      clientId: auth.user?.id || "",
     },
   });
 
@@ -70,6 +73,11 @@ const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
       setIsLoading(true);
       const data = await fetchClientProfiles();
       setClients(data);
+      
+      // Si l'utilisateur n'est pas un agent, on définit le clientId sur son propre ID
+      if (!isAgent && auth.user) {
+        form.setValue("clientId", auth.user.id);
+      }
     } catch (error) {
       console.error("Error loading clients:", error);
       toast({
@@ -84,10 +92,13 @@ const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
 
   useEffect(() => {
     if (open) {
-      form.reset();
+      form.reset({
+        name: "",
+        clientId: auth.user?.id || "",
+      });
       loadClients();
     }
-  }, [open]);
+  }, [open, auth.user]);
 
   const onSubmit = async (data: FormData) => {
     if (!auth.user) return;
@@ -138,34 +149,48 @@ const CreateFolderDialog: React.FC<CreateFolderDialogProps> = ({
               )}
             />
             
-            <FormField
-              control={form.control}
-              name="clientId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Client</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                    disabled={isLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner un client" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {clients.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {`${client.firstName} ${client.lastName}`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {isAgent ? (
+              <FormField
+                control={form.control}
+                name="clientId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner un client" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {clients.map((client) => (
+                          <SelectItem key={client.id} value={client.id}>
+                            {`${client.firstName} ${client.lastName}`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : auth.user ? (
+              <FormItem>
+                <FormLabel>Client</FormLabel>
+                <FormControl>
+                  <Input 
+                    value={`${auth.user.firstName} ${auth.user.lastName}`}
+                    disabled={true}
+                    className="bg-muted"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            ) : null}
             
             <DialogFooter className="flex justify-end gap-2">
               <Button variant="outline" type="button" onClick={onClose}>

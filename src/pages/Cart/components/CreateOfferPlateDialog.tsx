@@ -33,6 +33,7 @@ import { createOfferPlate } from "../CartService";
 import { fetchAllFolders } from "@/pages/OfferPlates/OfferPlatesService";
 import { useAuth } from "@/lib/auth";
 import { UserRole, Folder } from "@/types";
+import { fetchClientProfiles } from "@/pages/Marketplace/MarketplacePlateService";
 
 interface CreateOfferPlateDialogProps {
   userId: string;
@@ -44,6 +45,7 @@ interface CreateOfferPlateDialogProps {
 const formSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   folderId: z.string().optional(),
+  clientId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -59,6 +61,9 @@ const CreateOfferPlateDialog: React.FC<CreateOfferPlateDialogProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(false);
+  const [clients, setClients] = useState<any[]>([]);
+  const [loadingClients, setLoadingClients] = useState(false);
+  const [showClientSelect, setShowClientSelect] = useState(false);
 
   const isAgent = auth.user && hasRole([UserRole.AGENT, UserRole.ADMIN]);
 
@@ -67,6 +72,7 @@ const CreateOfferPlateDialog: React.FC<CreateOfferPlateDialogProps> = ({
     defaultValues: {
       name: "Ma plaquette d'offres",
       folderId: "new", // Default to creating a new folder
+      clientId: auth.user?.id,
     },
   });
 
@@ -75,6 +81,22 @@ const CreateOfferPlateDialog: React.FC<CreateOfferPlateDialogProps> = ({
       loadFolders();
     }
   }, [open, isAgent]);
+
+  useEffect(() => {
+    if (open && isAgent) {
+      loadClients();
+    }
+  }, [open, isAgent]);
+
+  useEffect(() => {
+    // Si l'utilisateur sélectionne "nouveau dossier" et qu'il est agent/admin,
+    // on affiche la sélection de client
+    if (form.watch("folderId") === "new" && isAgent) {
+      setShowClientSelect(true);
+    } else {
+      setShowClientSelect(false);
+    }
+  }, [form.watch("folderId"), isAgent]);
 
   const loadFolders = async () => {
     if (!auth.user) return;
@@ -94,11 +116,32 @@ const CreateOfferPlateDialog: React.FC<CreateOfferPlateDialogProps> = ({
     }
   };
 
+  const loadClients = async () => {
+    if (!isAgent) return;
+    
+    try {
+      setLoadingClients(true);
+      const clientData = await fetchClientProfiles();
+      setClients(clientData);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger la liste des clients",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingClients(false);
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
-      // Pass the folder id as is - it will be handled in the service
-      const offerPlate = await createOfferPlate(userId, data.name, data.folderId);
+      
+      // Si on crée un nouveau dossier, on utilise le client sélectionné ou l'utilisateur actuel
+      const clientId = data.folderId === "new" && isAgent ? data.clientId : auth.user?.id;
+      
+      const offerPlate = await createOfferPlate(userId, data.name, data.folderId, clientId);
       toast({
         title: "Plaquette créée",
         description: "Votre plaquette d'offres a été créée avec succès.",
@@ -167,6 +210,57 @@ const CreateOfferPlateDialog: React.FC<CreateOfferPlateDialogProps> = ({
                           ))}
                         </SelectContent>
                       </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            
+            {showClientSelect && isAgent && (
+              <FormField
+                control={form.control}
+                name="clientId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client</FormLabel>
+                    <FormControl>
+                      <Select 
+                        value={field.value} 
+                        onValueChange={field.onChange}
+                        disabled={loadingClients}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionnez un client" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {clients.map(client => (
+                            <SelectItem key={client.id} value={client.id}>
+                              {`${client.firstName} ${client.lastName}`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            
+            {!isAgent && (
+              <FormField
+                control={form.control}
+                name="clientId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client</FormLabel>
+                    <FormControl>
+                      <Input 
+                        value={auth.user ? `${auth.user.firstName} ${auth.user.lastName}` : ""}
+                        disabled={true}
+                        className="bg-muted"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

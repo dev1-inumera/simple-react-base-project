@@ -78,7 +78,7 @@ export const removeCartItem = async (itemId: string) => {
   }
 };
 
-export const createOfferPlate = async (userId: string, name: string = "Plaquette d'offres", folderId?: string) => {
+export const createOfferPlate = async (userId: string, name: string = "Plaquette d'offres", folderId?: string, clientId?: string) => {
   try {
     const { data: carts, error: cartError } = await supabase
       .from("offer_plates")
@@ -104,20 +104,25 @@ export const createOfferPlate = async (userId: string, name: string = "Plaquette
     if (userError) throw userError;
     
     let agentId = userId;
-    let clientId = userId;
+    let actualClientId = clientId || userId;
     
     if (user.role === 'agent' || user.role === 'admin') {
       agentId = userId;
-      const { data: clients, error: clientsError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("role", "client")
-        .limit(1);
-        
-      if (!clientsError && clients && clients.length > 0) {
-        clientId = clients[0].id;
+      
+      // Si aucun client n'est fourni, on essaie d'en trouver un (cas par défaut)
+      if (!clientId) {
+        const { data: clients, error: clientsError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("role", "client")
+          .limit(1);
+          
+        if (!clientsError && clients && clients.length > 0) {
+          actualClientId = clients[0].id;
+        }
       }
     } else {
+      // Pour un client, on recherche un agent
       const { data: agents, error: agentsError } = await supabase
         .from("profiles")
         .select("id")
@@ -131,7 +136,7 @@ export const createOfferPlate = async (userId: string, name: string = "Plaquette
     
     const actualFolderId = folderId === "new" ? undefined : folderId;
     
-    const result = await createOfferPlateFromCart(name, agentId, clientId, cartItems, actualFolderId);
+    const result = await createOfferPlateFromCart(name, agentId, actualClientId, cartItems, actualFolderId);
     
     const { error: deleteError } = await supabase
       .from("offer_plate_items")
@@ -141,14 +146,14 @@ export const createOfferPlate = async (userId: string, name: string = "Plaquette
     if (deleteError) throw deleteError;
     
     await createNotification(
-      clientId,
+      actualClientId,
       "Nouvelle plaquette d'offres",
       `Une nouvelle plaquette d'offres "${name}" a été créée.`,
       "info",
       `/offer-plates/${result.offerPlate.id}`
     );
     
-    if (agentId !== clientId) {
+    if (agentId !== actualClientId) {
       await createNotification(
         agentId,
         "Nouvelle plaquette d'offres",

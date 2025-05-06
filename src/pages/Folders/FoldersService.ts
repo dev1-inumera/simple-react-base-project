@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Folder, OfferPlate, Quote } from "@/types";
 import { mapFolders, mapFolder, mapOfferPlates, mapQuotes } from "@/utils/dataMapper";
@@ -32,16 +31,6 @@ export const fetchFolders = async (userId: string, isAgent: boolean) => {
 
 export const fetchOfferPlatesForFolder = async (folderId: string) => {
   try {
-    // First get the folder to get client_id and agent_id
-    const { data: folder, error: folderError } = await supabase
-      .from("folders")
-      .select("client_id, agent_id")
-      .eq("id", folderId)
-      .single();
-    
-    if (folderError) throw folderError;
-    
-    // Then get all offer plates for this client-agent pair
     const { data, error } = await supabase
       .from("offer_plates")
       .select(`
@@ -52,8 +41,7 @@ export const fetchOfferPlatesForFolder = async (folderId: string) => {
         status,
         created_at
       `)
-      .eq("client_id", folder.client_id)
-      .eq("agent_id", folder.agent_id)
+      .eq("folder_id", folderId)
       .neq("status", "draft")
       .order("created_at", { ascending: false });
     
