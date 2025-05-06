@@ -1,12 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 import * as sendgrid from "npm:@sendgrid/mail@7.7.0";
 
-// Initialize Resend as primary email provider
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-// Initialize SendGrid as backup email provider
+// Initialize SendGrid
 const sgMail = sendgrid.default;
 sgMail.setApiKey(Deno.env.get("SENDGRID_API_KEY") || "");
 
@@ -217,48 +213,28 @@ serve(async (req) => {
       </html>
     `;
 
-    // Try to send email via Resend first
     try {
-      const emailResponse = await resend.emails.send({
-        from: "i-numera <plaquettes@i-numera.com>",
-        to: [clientEmail],
+      const msg = {
+        to: clientEmail,
+        from: 'plaquettes@i-numera.com',
         subject: `Votre plaquette d'offres : ${offerPlateName}`,
         html: htmlContent,
-      });
-
-      console.log("Email sent successfully via Resend:", emailResponse);
-
-      return new Response(JSON.stringify({ success: true, provider: "resend", data: emailResponse }), {
+      };
+      
+      console.log("Tentative d'envoi via SendGrid:", msg);
+      await sgMail.send(msg);
+      console.log("Email envoyé avec succès via SendGrid");
+      
+      return new Response(JSON.stringify({ success: true, provider: "sendgrid" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-    } catch (resendError) {
-      // If Resend fails, try SendGrid as backup
-      console.error("Resend failed, trying SendGrid:", resendError);
-      
-      try {
-        const msg = {
-          to: clientEmail,
-          from: 'plaquettes@i-numera.com',
-          subject: `Votre plaquette d'offres : ${offerPlateName}`,
-          html: htmlContent,
-        };
-        
-        await sgMail.send(msg);
-        
-        console.log("Email sent successfully via SendGrid");
-        
-        return new Response(JSON.stringify({ success: true, provider: "sendgrid" }), {
-          status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      } catch (sendgridError) {
-        console.error("Both email providers failed:", sendgridError);
-        throw new Error("Les deux fournisseurs d'e-mail ont échoué");
-      }
+    } catch (sendgridError) {
+      console.error("Erreur SendGrid:", sendgridError);
+      throw new Error(`Erreur d'envoi d'email: ${sendgridError.message}`);
     }
   } catch (error: any) {
-    console.error("Error in send-offer-plate-email function:", error);
+    console.error("Erreur dans la fonction send-offer-plate-email:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
