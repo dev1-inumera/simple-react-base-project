@@ -1,6 +1,6 @@
 
 import React from "react";
-import { format, subDays, subWeeks, subMonths } from "date-fns";
+import { format } from "date-fns";
 import { fr } from 'date-fns/locale';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,7 +15,10 @@ interface EmailStatsHeaderProps {
     to: Date;
   };
   onTimeRangeChange: (range: string) => void;
-  onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
+  onDateRangeChange: React.Dispatch<React.SetStateAction<{
+    from: Date;
+    to: Date;
+  }>>;
   onRefresh: () => void;
 }
 
@@ -29,10 +32,11 @@ export const EmailStatsHeader: React.FC<EmailStatsHeaderProps> = ({
   // Handle calendar date selection to ensure both from and to dates are set
   const handleCalendarSelect = (range: { from?: Date; to?: Date } | undefined) => {
     if (range?.from) {
-      onDateRangeChange({
-        from: range.from,
+      onDateRangeChange(currentDateRange => ({
+        ...currentDateRange,
+        from: range.from || currentDateRange.from,
         to: range.to || range.from // If to is undefined, use from as the end date
-      });
+      }));
     }
   };
 
