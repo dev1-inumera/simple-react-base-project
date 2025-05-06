@@ -87,7 +87,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
       await onStatusUpdate(status);
     } else {
       try {
-        setProcessingAction(true);
         await updateQuoteStatus(quote.id, status);
         
         toast({
@@ -103,8 +102,6 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
           description: error.message,
           variant: "destructive",
         });
-      } finally {
-        setProcessingAction(false);
       }
     }
   };
