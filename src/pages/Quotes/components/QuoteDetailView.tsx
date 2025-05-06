@@ -24,9 +24,17 @@ interface QuoteDetailViewProps {
   quote: Quote;
   onBack: () => void;
   onUpdate: () => void;
+  onStatusUpdate?: (status: string) => Promise<void>;
+  processingAction?: boolean;
 }
 
-const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpdate }) => {
+const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ 
+  quote, 
+  onBack, 
+  onUpdate,
+  onStatusUpdate,
+  processingAction = false
+}) => {
   const { toast } = useToast();
   const { auth, hasRole } = useAuth();
   
@@ -75,26 +83,31 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
     loadQuoteDetails();
   }, [quote]);
 
+  // Use the provided onStatusUpdate function if available, otherwise use the local handler
   const handleStatusUpdate = async (status: string) => {
-    try {
-      setProcessingAction(true);
-      await updateQuoteStatus(quote.id, status);
-      
-      toast({
-        title: "Statut mis à jour",
-        description: "Le statut du devis a été mis à jour.",
-      });
-      
-      onUpdate();
-      onBack();
-    } catch (error: any) {
-      toast({
-        title: "Erreur",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setProcessingAction(false);
+    if (onStatusUpdate) {
+      await onStatusUpdate(status);
+    } else {
+      try {
+        setProcessingAction(true);
+        await updateQuoteStatus(quote.id, status);
+        
+        toast({
+          title: "Statut mis à jour",
+          description: "Le statut du devis a été mis à jour.",
+        });
+        
+        onUpdate();
+        onBack();
+      } catch (error: any) {
+        toast({
+          title: "Erreur",
+          description: error.message,
+          variant: "destructive",
+        });
+      } finally {
+        setProcessingAction(false);
+      }
     }
   };
 
@@ -231,12 +244,14 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
   };
 
   const renderStatusActions = () => {
+    const buttonProcessing = processingAction || processingAction;
+    
     if (isAdmin && quote.status === "pending") {
       return (
         <div className="flex gap-2">
           <Button
             onClick={() => handleStatusUpdate("approved")}
-            disabled={processingAction}
+            disabled={buttonProcessing}
             className="bg-green-600 hover:bg-green-700"
           >
             <Check className="h-4 w-4 mr-2" />
@@ -244,7 +259,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({ quote, onBack, onUpda
           </Button>
           <Button
             onClick={() => handleStatusUpdate("rejected")}
-            disabled={processingAction}
+            disabled={buttonProcessing}
             variant="destructive"
           >
             <X className="h-4 w-4 mr-2" />

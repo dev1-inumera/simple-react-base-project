@@ -370,3 +370,69 @@ export const updateQuotePaymentStatus = async (quoteId: string, paymentStatus: s
     throw error;
   }
 };
+
+// Add this new function to send quote emails with payment links
+export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
+  try {
+    // Fetch the required data for the email (client info, quote details, etc.)
+    const [quoteDetails, clientData] = await Promise.all([
+      fetchQuoteDetails(quoteId),
+      fetchClientByQuoteId(quoteId)
+    ]);
+    
+    if (!clientData || !clientData.email) {
+      throw new Error("Les informations du client sont incomplètes ou indisponibles");
+    }
+
+    // Create a payment link for the quote
+    const clientFullName = `${clientData.first_name || ""} ${clientData.last_name || ""}`.trim() || "Client";
+    
+    const totalAmount = quoteDetails.total_amount || 0;
+    
+    // Generate a payment link using our Stripe API
+    const paymentLinkResponse = await createPaymentLink(
+      totalAmount,
+      clientFullName,
+      {
+        clientEmail: clientData.email,
+        description: `Devis #${quoteId.substring(0, 8)}`,
+        failureUrl: `${window.location.origin}/payment/failure?quoteId=${quoteId}`,
+        successUrl: `${window.location.origin}/payment/success?quoteId=${quoteId}`,
+        reference: `quote-${quoteId}`
+      }
+    );
+    
+    if (!paymentLinkResponse?.data?.paymentLink) {
+      throw new Error("Erreur lors de la création du lien de paiement");
+    }
+    
+    const paymentLink = paymentLinkResponse.data.paymentLink;
+    
+    // Send the email via our edge function
+    const { data: emailResult, error: emailError } = await supabase.functions.invoke('send-quote-email', {
+      body: {
+        quoteId,
+        clientEmail: clientData.email,
+        clientName: clientFullName,
+        quoteAmount: totalAmount,
+        paymentLink
+      }
+    });
+    
+    if (emailError) throw emailError;
+    
+    // Create notification for the client
+    await createNotification(
+      clientData.id,
+      "Devis approuvé",
+      "Votre devis a été approuvé et est prêt pour paiement. Un email vous a été envoyé avec un lien de paiement.",
+      "success",
+      `/quotes/${quoteId}`
+    );
+    
+    return emailResult;
+  } catch (error) {
+    console.error("Error sending quote email:", error);
+    throw error;
+  }
+};

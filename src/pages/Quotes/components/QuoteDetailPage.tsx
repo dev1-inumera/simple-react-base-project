@@ -2,15 +2,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QuoteDetailView from "./QuoteDetailView";
-import { fetchQuoteById } from "../QuotesService";
+import { fetchQuoteById, updateQuoteStatus, sendQuoteEmailWithPaymentLink } from "../QuotesService";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
+import { UserRole } from "@/types";
 
 const QuoteDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { auth, hasRole } = useAuth();
   const [quote, setQuote] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [processingAction, setProcessingAction] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -45,6 +49,47 @@ const QuoteDetailPage: React.FC = () => {
     }
   };
 
+  const handleStatusUpdate = async (status: string) => {
+    if (!id) return;
+    
+    try {
+      setProcessingAction(true);
+      await updateQuoteStatus(id, status);
+      
+      // If an admin approves the quote, send an automatic email with payment link
+      if (status === "approved" && hasRole(UserRole.ADMIN)) {
+        try {
+          await sendQuoteEmailWithPaymentLink(id);
+          toast({
+            title: "E-mail envoyé",
+            description: "Le devis a été envoyé au client avec un lien de paiement.",
+          });
+        } catch (emailError: any) {
+          toast({
+            title: "Erreur d'envoi d'e-mail",
+            description: emailError.message,
+            variant: "destructive",
+          });
+        }
+      }
+      
+      toast({
+        title: "Statut mis à jour",
+        description: "Le statut du devis a été mis à jour avec succès.",
+      });
+      
+      handleUpdate();
+    } catch (error: any) {
+      toast({
+        title: "Erreur de mise à jour",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingAction(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -66,6 +111,8 @@ const QuoteDetailPage: React.FC = () => {
       quote={quote}
       onBack={handleBack}
       onUpdate={handleUpdate}
+      onStatusUpdate={handleStatusUpdate}
+      processingAction={processingAction}
     />
   );
 };
