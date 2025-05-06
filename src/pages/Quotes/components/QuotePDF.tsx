@@ -18,14 +18,11 @@ const styles = StyleSheet.create({
   headerOverlay: {
     position: 'absolute',
     top: 100,
-    left: 100,
-    backgroundColor: '#2B3266',
-    padding: 10,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+    left: 50,
+    
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
   },
@@ -57,6 +54,12 @@ const styles = StyleSheet.create({
   clientEmail: {
     fontSize: 10,
     color: '#3366cc',
+  },
+  clientAddress: {
+    paddingBottom:'6px',
+    paddingTop: '6px',
+    fontSize: 10,
+    color: 'rgb(20, 28, 44)',
   },
   table: {
     marginTop: 20,
@@ -122,7 +125,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   totalSection: {
-    marginTop: 50,
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
@@ -194,6 +197,14 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    zIndex: -1, // pour simuler l’arrière-plan
+  },
 });
 
 interface QuotePDFProps {
@@ -219,6 +230,11 @@ const QuotePDF: React.FC<QuotePDFProps> = ({ quote, items, clientName, paymentIn
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
+        <Image
+  style={styles.background}
+  src="/images/inuma.png"
+/>
+
           <View style={styles.headerOverlay}>
             <Text style={styles.title}>Devis n° {quoteNumber}</Text>
           </View>
@@ -226,16 +242,15 @@ const QuotePDF: React.FC<QuotePDFProps> = ({ quote, items, clientName, paymentIn
             <Text style={styles.infoText}>131, continental Dr, Suite 305 Newark, DE 19713</Text>
             <Text style={styles.infoText}>United States</Text>
             <Text style={styles.infoText}>+1(833) 856 3018</Text>
-            <Text style={styles.infoText}>Lot II I près 23 Morarano</Text>
-            <Text style={styles.infoText}>Alarobia, 101 Antananarivo</Text>
-            <Text style={styles.infoText}>+33 9 86 40 63</Text>
+           
+            <Text style={styles.infoText}>+33 9 85 40 63</Text>
             <Text style={styles.infoText}>www.i-numera.com</Text>
           </View>
         </View>
 
         <View style={styles.clientSection}>
-          <Text style={styles.clientTitle}>Client: {clientName || "Client"}</Text>
-          <Text style={styles.clientId}>{quote.clientId || ""}</Text>
+          <Text style={styles.clientTitle}>{clientName || "Client"}</Text>
+          <Text style={styles.clientAddress}>{quote.client?.address || ""}</Text>
           <Text style={styles.clientEmail}>{quote.client?.email || ""}</Text>
         </View>
 

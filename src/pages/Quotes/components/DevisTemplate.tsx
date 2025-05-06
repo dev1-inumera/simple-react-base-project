@@ -27,6 +27,7 @@ const DevisTemplate: React.FC<DevisTemplateProps> = ({ quote, items, clientName,
   
   const formattedDate = quote.createdAt ? format(new Date(quote.createdAt), 'dd/MM/yyyy', { locale: fr }) : '';
   const quoteNumber = quote.id ? `${quote.id.substring(0, 8)}` : '';
+  console.log(quote.client?.phone)
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -53,25 +54,23 @@ const DevisTemplate: React.FC<DevisTemplateProps> = ({ quote, items, clientName,
         </div>
         
         <CustomQuotesHeader />
+        <div className="left-[100px] top-[-180px]  p-4 rounded-t-md relative items-center" style={{zIndex:999}}>
+              <h1 className="text-xl text-white z-10 font-bold text-[25px]">Devis n° {quoteNumber}</h1>
+            </div>
         <div className="top-[-100px] relative p-8 print:p-0">
           {/* Header Section */}
           
-          <div className="top-[-150px] relative mb-6 h-[300px] bg-no-repeat bg-cover bg-top" 
-          style={{ backgroundImage: "url('/images/inum.png')" }}>
-            <div className="left-[100px] top-[100px] bg text-white p-4 rounded-t-md relative items-center">
-              <h1 className="text-xl font-bold text-[25px]">Devis n° {quoteNumber}</h1>
-            </div>
+          <div className="top-[-150px] relative h-[20px] bg-no-repeat bg-cover bg-top" 
+        >
             
-            <div className="relative mt-[200px] left-[430px] justify-between pt-2 pb-4">
+            
+            <div className="relative mt-[200px] left-[430px] justify-between pt-2 ">
               <div className="w-1/2"></div>
               <div className="w-1/2 text-right z-10 relative pr-4 pt-2">
                 <p className="text-xs">131, continental Dr, Suite 305 Newark, DE 19713</p>
                 <p className="text-xs">United States</p>
                 <p className="text-xs">+1(833) 856 3018</p>
-                <div className="flex justify-end">
-                  <p className="text-xs">Lot II I près 23 Morarano</p>
-                </div>
-                <p className="text-xs">Alarobia, 101 Antananarivo</p>
+                
                 <p className="text-xs">+33 9 86 40 63</p>
                 <p className="text-xs">www.i-numera.com</p>
               </div>
@@ -81,9 +80,9 @@ const DevisTemplate: React.FC<DevisTemplateProps> = ({ quote, items, clientName,
           {/* Client Info Section */}
           <div className="mb-6">
             <div className="flex flex-col">
-              <h2 className="font-bold text-base">Client: {clientName || "Client"}</h2>
-              <p className="uppercase text-xs text-gray-700">{quote.clientId ? quote.clientId : ""}</p>
-              <p className="text-xs text-blue-600">{quote.client?.email || ""}</p>
+              <h2 className="font-bold text-base">{clientName || "Client"}</h2>
+              <p className="text-[17px] text-black">{quote.client?.address || ""}</p>
+              <p className="text-xs text-blue-600 underline">{quote.client?.email || ""}</p>
             </div>
           </div>
 

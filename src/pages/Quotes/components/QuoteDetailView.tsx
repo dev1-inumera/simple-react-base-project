@@ -487,7 +487,7 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
           {!loading && (
             <>
               <DevisTemplate 
-                quote={quote} 
+                quote={{...quote, client}} 
                 items={quoteItems} 
                 clientName={clientName}
                 paymentInfo={paymentInfo ? {

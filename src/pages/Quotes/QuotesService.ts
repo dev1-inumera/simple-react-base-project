@@ -268,7 +268,7 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
         id,
         first_name,
         last_name,
-        phone,
+        address,
         company_name,
         email
       `)
@@ -283,7 +283,7 @@ export const fetchClientByQuoteId = async (quoteId: string) => {
       first_name: clientProfile.first_name,
       last_name: clientProfile.last_name,
       email: clientProfile.email || "",
-      phone: clientProfile.phone,
+      address: clientProfile.address,
       company_name: clientProfile.company_name
     };
   } catch (error) {
