@@ -12,13 +12,14 @@ const generateHTMLContent = (quote, items, clientName, paymentInfo) => {
         <head>
           <style>
             body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }
-            .header { text-align: center; padding: 20px; background-color: #f4f4f4; }
+            .header { padding: 20px; background-color: #C41C28; color: white; }
             .footer { text-align: center; padding: 10px; background-color: #f4f4f4; font-size: 12px; }
             .company-info, .client-info { text-align: right; font-size: 12px; }
             .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
             .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
             .table th { background-color: #f2f2f2; }
             .total { text-align: right; font-weight: bold; margin-top: 20px; }
+            .total-section { background-color: #C41C28; color: white; padding: 5px 10px; }
           </style>
         </head>
         <body>
@@ -63,12 +64,22 @@ const generateHTMLContent = (quote, items, clientName, paymentInfo) => {
           <div class="total">
             <p>Total HT: ${totalHT.toFixed(2)}€</p>
             <p>TVA (20%): ${tva.toFixed(2)}€</p>
-            <p><strong>Total TTC: ${totalTTC.toFixed(2)}€</strong></p>
+            <p class="total-section"><strong>Total TTC: ${totalTTC.toFixed(2)}€</strong></p>
           </div>
+
+          ${paymentInfo ? `
+          <div style="margin-top: 20px;">
+            <h3>Informations de paiement</h3>
+            <p>Banque: ${paymentInfo.bankName || ""}</p>
+            <p>IBAN: ${paymentInfo.iban || ""}</p>
+            <p>BIC: ${paymentInfo.bic || ""}</p>
+          </div>
+          ` : ''}
   
           <div class="footer">
             <p>Ce devis est valable 7 jours à compter de sa date d'émission</p>
             <p>i-numa.com | contact@i-numa.com | +33 9 86 40 63</p>
+            <a href="${quote.paymentLink || '#'}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px;">Payer maintenant</a>
           </div>
         </body>
       </html>

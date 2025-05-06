@@ -419,12 +419,16 @@ export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
     
     // Generate the HTML content with the exact same design as the preview
     const htmlContent = generateHTMLContent(
-      quoteDetails, 
+      {...quoteDetails, paymentLink}, // Pass paymentLink to the quote object
       quoteItems, 
       clientFullName,
       paymentInfo
     );
 
+    console.log("Envoi d'email pour le devis:", quoteId);
+    console.log("Email du client:", clientData.email);
+    console.log("Lien de paiement généré:", paymentLink);
+    
     // Send the email via our edge function with the complete HTML design
     const { data: emailResult, error: emailError } = await supabase.functions.invoke('send-quote-email', {
       body: {
@@ -437,7 +441,12 @@ export const sendQuoteEmailWithPaymentLink = async (quoteId: string) => {
       }
     });
     
-    if (emailError) throw emailError;
+    if (emailError) {
+      console.error("Erreur lors de l'envoi de l'email:", emailError);
+      throw emailError;
+    }
+    
+    console.log("Résultat de l'envoi d'email:", emailResult);
     
     // Create notification for the client
     await createNotification(

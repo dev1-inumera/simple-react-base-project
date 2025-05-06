@@ -59,12 +59,14 @@ const QuoteDetailPage: React.FC = () => {
       // If an admin approves the quote, send an automatic email with payment link
       if (status === "approved" && hasRole(UserRole.ADMIN)) {
         try {
+          console.log("Envoi automatique d'email pour devis approuvé:", id);
           await sendQuoteEmailWithPaymentLink(id);
           toast({
             title: "E-mail envoyé",
             description: "Le devis a été envoyé au client avec un lien de paiement.",
           });
         } catch (emailError: any) {
+          console.error("Erreur lors de l'envoi de l'email:", emailError);
           toast({
             title: "Erreur d'envoi d'e-mail",
             description: emailError.message,
