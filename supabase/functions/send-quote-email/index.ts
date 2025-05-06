@@ -40,6 +40,9 @@ serve(async (req) => {
       throw new Error("Email du client ou lien de paiement manquant");
     }
 
+    console.log("Préparation de l'email pour:", clientEmail);
+    console.log("Contenu HTML reçu:", htmlContent ? "Oui (personnalisé)" : "Non");
+
     // Format the amount for display
     const formattedAmount = new Intl.NumberFormat('fr-FR', {
       style: 'currency',
@@ -72,7 +75,7 @@ serve(async (req) => {
         html: emailHtml,
       };
       
-      console.log("Tentative d'envoi via SendGrid:", msg);
+      console.log("Préparation de l'envoi via SendGrid:", JSON.stringify(msg, null, 2));
       await sgMail.send(msg);
       console.log("Email envoyé avec succès via SendGrid");
       

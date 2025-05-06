@@ -60,7 +60,11 @@ const QuoteDetailPage: React.FC = () => {
       if (status === "approved" && hasRole(UserRole.ADMIN)) {
         try {
           console.log("Envoi automatique d'email pour devis approuvé:", id);
-          await sendQuoteEmailWithPaymentLink(id);
+          
+          // Envoyer l'email avec le devis et le lien de paiement
+          const emailResult = await sendQuoteEmailWithPaymentLink(id);
+          console.log("Résultat de l'envoi d'email:", emailResult);
+          
           toast({
             title: "E-mail envoyé",
             description: "Le devis a été envoyé au client avec un lien de paiement.",
