@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Offer, CartItem, OfferPlate, Folder } from "@/types";
 import { mapOfferPlates, mapOffers, mapFolders } from "@/utils/dataMapper";
@@ -219,6 +220,63 @@ export const createOfferPlateFromCart = async (
       .insert(itemsToInsert);
 
     if (itemsError) throw itemsError;
+
+    // Récupérer les informations sur l'agent et le client
+    const [agentData, clientData] = await Promise.all([
+      supabase
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('id', agentId)
+        .single(),
+      supabase
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('id', clientId)
+        .single()
+    ]);
+    
+    if (clientData.data?.email) {
+      try {
+        // Préparer les données pour l'email
+        const agentName = `${agentData.data?.first_name || ""} ${agentData.data?.last_name || ""}`.trim();
+        const clientName = `${clientData.data?.first_name || ""} ${clientData.data?.last_name || ""}`.trim();
+        
+        // Récupérer les détails complets des offres pour l'email
+        const emailItems = await Promise.all(items.map(async item => {
+          const { data: offerData } = await supabase
+            .from('offers')
+            .select('name, description, price_monthly, setup_fee, image_url')
+            .eq('id', item.offerId)
+            .single();
+            
+          return {
+            name: offerData?.name || "",
+            description: offerData?.description || "",
+            priceMonthly: offerData?.price_monthly || 0,
+            setupFee: offerData?.setup_fee || 0,
+            imageUrl: offerData?.image_url,
+            quantity: item.quantity
+          };
+        }));
+        
+        // Envoyer l'email de présentation
+        await supabase.functions.invoke('send-offer-plate-email', {
+          body: {
+            offerPlateId: offerPlateData.id,
+            clientEmail: clientData.data.email,
+            clientName,
+            offerPlateName: name,
+            agentName,
+            items: emailItems
+          }
+        });
+        
+        console.log("Email de plaquette envoyé avec succès");
+      } catch (emailError) {
+        console.error("Erreur lors de l'envoi de l'email de plaquette:", emailError);
+        // On ne relance pas l'erreur pour ne pas bloquer la création de la plaquette
+      }
+    }
 
     return {
       offerPlate: offerPlateData,
