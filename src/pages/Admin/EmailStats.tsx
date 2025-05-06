@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { EmailService } from "@/services/EmailService";
@@ -14,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format, addDays, addWeeks, addMonths, subDays, subWeeks, subMonths } from "date-fns";
 import { fr } from 'date-fns/locale';
-import { Mail, Calendar as CalendarIcon, BarChart2, PieChart, RefreshCw, MousePointerClick } from "lucide-react";
+import { Mail, Calendar as CalendarIcon, BarChart2, PieChart, RefreshCw, MousePointerClick as MousePointerClickIcon } from "lucide-react";
 
 const EmailStats: React.FC = () => {
   const { toast } = useToast();
@@ -224,7 +223,7 @@ const EmailStats: React.FC = () => {
           description="Pourcentage d'emails avec clics"
           value={summaryStats.clickRate.toFixed(1)}
           unit="%"
-          icon={<MousePointerClick className="h-4 w-4" />}
+          icon={<MousePointerClickIcon className="h-4 w-4" />}
           loading={loading}
         />
         <EmailStatsCard
