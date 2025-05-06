@@ -21,6 +21,7 @@ import Settings from '@/pages/Settings';
 import PaymentSuccess from '@/pages/Payment/PaymentSuccess';
 import PaymentFailure from '@/pages/Payment/PaymentFailure';
 import PaymentHistory from '@/pages/Admin/PaymentHistory';
+import EmailStats from '@/pages/Admin/EmailStats';
 import ClientOptSignup from '@/pages/Client/OptSignup';
 import { UserRole } from '@/types';
 
@@ -132,6 +133,16 @@ function App() {
             <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
               <MainLayout>
                 <PaymentHistory />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/email-stats"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
+              <MainLayout>
+                <EmailStats />
               </MainLayout>
             </ProtectedRoute>
           }

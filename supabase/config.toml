@@ -6,3 +6,9 @@ verify_jwt = false
 
 [functions.payment-link]
 verify_jwt = true
+
+[functions.sendgrid-stats]
+verify_jwt = true
+
+[functions.sendgrid-activity]
+verify_jwt = true

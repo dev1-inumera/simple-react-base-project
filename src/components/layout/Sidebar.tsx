@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -25,7 +26,9 @@ import {
   FileText,
   Users,
   Settings,
-  LogOut
+  LogOut,
+  Mail,
+  BarChart2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -85,6 +88,16 @@ export const AppSidebar: React.FC = () => {
         roles: [UserRole.AGENT, UserRole.ADMIN],
       },
     ];
+
+    // Add admin-only menu items
+    if (auth.user?.role === UserRole.ADMIN) {
+      items.push({
+        title: "Statistiques Emails",
+        path: "/admin/email-stats",
+        icon: BarChart2,
+        roles: [UserRole.ADMIN],
+      });
+    }
 
     return items.filter(item => 
       auth.user && item.roles.includes(auth.user.role)
