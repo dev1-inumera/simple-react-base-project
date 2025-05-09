@@ -153,12 +153,19 @@ export const updateQuoteStatus = async (quoteId: string, status: string) => {
       .eq("id", quoteId);
     
     if (error) throw error;
+
+    // Appel de l'envoi d'email si le statut déclenche l'action
+    if (status === "approved") {
+      await sendQuoteEmailWithPaymentLink(quoteId);
+    }
+
     return true;
   } catch (error) {
-    console.error("Error updating quote status:", error);
+    console.error("Erreur lors de la mise à jour du statut du devis :", error);
     throw error;
   }
 };
+
 
 export const fetchOfferPlatesWithoutQuotes = async (userId: string, isAgent: boolean) => {
   try {
