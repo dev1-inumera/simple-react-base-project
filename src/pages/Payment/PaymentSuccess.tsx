@@ -10,13 +10,14 @@ import { useToast } from '@/hooks/use-toast';
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const quoteId = searchParams.get('quoteId');
+  const sessionId = searchParams.get('session_id'); // Stripe returns session_id
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isUpdating, setIsUpdating] = useState(true);
 
   useEffect(() => {
     const updatePaymentStatus = async () => {
-      if (!quoteId) {
+      if (!quoteId && !sessionId) {
         setIsUpdating(false);
         toast({
           title: "Paiement réussi",
@@ -26,20 +27,27 @@ const PaymentSuccess = () => {
       }
       
       try {
-        // Update quote payment status directly
-        await updateQuotePaymentStatus(quoteId, "Payé");
+        // If we have a quoteId, update it directly
+        if (quoteId) {
+          await updateQuotePaymentStatus(quoteId, "Payé");
+        } else if (sessionId) {
+          // If we only have sessionId, we should verify the payment with Stripe
+          // and find the associated quote (this would require additional API call)
+          console.log("Stripe session ID received:", sessionId);
+          // Future enhancement: Verify payment status with Stripe API
+        }
         
         // Send payment notification to our endpoint
         try {
           // Prepare payment notification data
           const notificationData = {
             paymentStatus: 'SUCCESS',
-            paymentMethod: 'ONLINE_PAYMENT',
+            paymentMethod: 'STRIPE',
             amount: 0, // This would ideally come from the payment provider
             fee: 0,    // This would ideally come from the payment provider
             clientName: 'Client', // This would ideally come from the payment provider
             description: 'Quote payment',
-            merchantPaymentReference: `MREF-${Date.now()}`,
+            merchantPaymentReference: sessionId || `MREF-${Date.now()}`,
             paymentReference: `PREF-${Date.now()}`,
             notificationToken: `TOKEN-${Date.now()}`
           };
@@ -73,7 +81,7 @@ const PaymentSuccess = () => {
     };
 
     updatePaymentStatus();
-  }, [quoteId, toast]);
+  }, [quoteId, sessionId, toast]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">

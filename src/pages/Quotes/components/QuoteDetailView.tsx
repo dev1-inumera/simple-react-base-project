@@ -127,26 +127,17 @@ const QuoteDetailView: React.FC<QuoteDetailViewProps> = ({
       // Construction du nom complet du client
       const clientFullName = `${client.first_name || ""} ${client.last_name || ""}`.trim() || "Client";
       
-      // Utiliser directement totalAmount sans modification
       const response = await createPaymentLink(
         totalAmount,
         clientFullName,
         {
           clientEmail: client.email,
-          change: {
-            currency: "EUR",
-            rate: 1
-          },
           failureUrl: `${window.location.origin}/payment/failure?quoteId=${quote.id}`,
           successUrl: `${window.location.origin}/payment/success?quoteId=${quote.id}`,
           callbackUrl: `${window.location.origin}/payment/callback/${quote.id}`,
-          description: "Plaquette d'offres",
-          methods: [
-            "ORANGE_MONEY",
-            "MVOLA",
-            "VISA"
-          ],
-          message: "Plaquette d'offres"
+          description: "Devis i-numera #" + quote.id.substring(0, 8),
+          message: "Paiement du devis i-numera",
+          reference: `quote-${quote.id}`
         }
       );
       

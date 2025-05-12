@@ -304,53 +304,28 @@ export const createPaymentLink = async (
   clientName: string,
   options: {
     clientEmail?: string,
-    change?: {
-      currency: string,
-      rate: number,
-    },
     failureUrl?: string,
     successUrl?: string,
     callbackUrl?: string,
-    notificationUrl?: string,
     description?: string,
-    methods?: string[],
     message?: string,
-    validDuration?: number,
     reference?: string,
   } = {}
 ) => {
   try {
     const origin = window.location.origin;
     
-    // This is the Papi API Key - normally it should be stored as a Supabase secret
-    // and accessed only in the Edge Function
-    const apiKey = "$2a$12$abjdxfghijtlmnopqrutwu8RVLPW4J3M9umNeC5rOrzo81WdnpEFy";
-    
-    // Use the amount directly without any conversion or normalization
-    // This assumes the amount is already in the correct format expected by the payment API
-    
-    const { data, error } = await supabase.functions.invoke('payment-link', {
+    // Call the new Stripe payment Edge Function instead of PAPI
+    const { data, error } = await supabase.functions.invoke('stripe-payment', {
       body: { 
-        amount: amount, // Use the amount directly as passed from QuoteDetailView
+        amount: amount, 
         clientName,
         clientEmail: options.clientEmail || "",
-        apiKey,
-        change: options.change || {
-          currency: "EUR",
-          rate: 1
-        },
         failureUrl: options.failureUrl || `${origin}/payment/failure`,
         successUrl: options.successUrl || `${origin}/payment/success`,
         callbackUrl: options.callbackUrl || `${origin}/payment/callback`,
-        notificationUrl: options.notificationUrl || `https://wprlkplzlhyrphbcaalc.supabase.co/functions/v1/payment-notification`,
         description: options.description || "i-numera",
-        methods: options.methods || [
-          "ORANGE_MONEY",
-          "MVOLA",
-          "VISA"
-        ],
         message: options.message || "i-numera",
-        validDuration: options.validDuration || 4,
         reference: options.reference || `quote-${Date.now()}`,
       }
     });

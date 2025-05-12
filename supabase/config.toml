@@ -10,6 +10,9 @@ verify_jwt = false
 [functions.payment-link]
 verify_jwt = false
 
+[functions.stripe-payment]
+verify_jwt = false
+
 [functions.payment-notification]
 verify_jwt = false
 

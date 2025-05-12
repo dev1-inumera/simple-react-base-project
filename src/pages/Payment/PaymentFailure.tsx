@@ -16,7 +16,7 @@ const PaymentFailure = () => {
         // Prepare notification data
         const notificationData = {
           paymentStatus: 'FAILED',
-          paymentMethod: 'ONLINE_PAYMENT',
+          paymentMethod: 'STRIPE',
           amount: 0, // This would ideally come from the payment provider
           fee: 0,    // This would ideally come from the payment provider
           clientName: 'Client', // This would ideally come from the payment provider
