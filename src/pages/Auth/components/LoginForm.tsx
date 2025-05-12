@@ -47,7 +47,13 @@ const LoginForm = ({ loading, setLoading, entranceAnimation, onSuccess }: LoginF
         throw error;
       }
       
+      // Succès de connexion, appeler le callback pour redirection
       onSuccess();
+      
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur la plateforme!",
+      });
     } catch (error: any) {
       toast({
         title: "Erreur de connexion",

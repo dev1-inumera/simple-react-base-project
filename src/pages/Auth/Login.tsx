@@ -1,17 +1,27 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import LoginForm from "./components/LoginForm";
 import CarouselPanel from "./components/CarouselPanel";
+import { useAuth } from "@/lib/auth";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { auth } = useAuth();
   
   const [loading, setLoading] = useState(false);
   const [entranceAnimation, setEntranceAnimation] = useState(false);
   const [exitAnimation, setExitAnimation] = useState(false);
+  
+  // Redirection si déjà authentifié
+  useEffect(() => {
+    if (auth.user && !auth.isLoading) {
+      navigate("/dashboard");
+    }
+  }, [auth.user, auth.isLoading, navigate]);
   
   // Apply entrance animation
   useEffect(() => {
@@ -24,7 +34,10 @@ const Login = () => {
   }, []);
 
   const handleLoginSuccess = () => {
-    navigate("/dashboard");
+    setExitAnimation(true);
+    setTimeout(() => {
+      navigate("/dashboard", { replace: true });
+    }, 300);
   };
 
   const handleBackToHome = () => {
