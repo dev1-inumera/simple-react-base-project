@@ -1,16 +1,15 @@
-
 export enum UserRole {
-  CLIENT = "client",
-  AGENT = "agent",
   ADMIN = "admin",
-  RESPONSABLE_PLATEAU = "responsable_plateau"
+  AGENT = "agent",
+  CLIENT = "client",
+  RESPONSABLE_PLATEAU = "responsable_plateau",
 }
 
 export interface User {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
   phone?: string;
   address?: string;
   birthDate?: string;
@@ -19,95 +18,45 @@ export interface User {
   businessSector?: string;
   companyName?: string;
   managerName?: string;
-  companyRole?: string;
+  companyRole?: string | null;
 }
 
-export interface OfferExtra {
-  id: string;
-  name: string;
-  description?: string;
-  unitPrice: number;
+export interface CartItem {
+  id?: string;
+  offerId: string;
+  quantity: number;
+  userId: string;
+  offer: Offer;
 }
 
 export interface Offer {
   id: string;
   name: string;
   description: string;
-  priceMonthly: number;
-  setupFee: number;
-  category: string;
+  price: number;
+  type: OfferType;
+  category: OfferCategory;
   imageUrl?: string;
-  isActive: boolean;
-  createdAt?: string;
-  features: string[];
-  extras?: OfferExtra[];
-  hasExtras?: boolean;  // Added for conditional display of extras button
+  monthlyPayment: number;
+  creationCost: number;
 }
 
-export interface CartItem {
-  id?: string;
-  offerId: string;
-  offer: Offer;
-  quantity: number;
-  offerPlateId?: string;
-  selectedExtras?: Record<string, number>; // Added for selected extras
+export enum OfferType {
+  SIMPLE = "simple",
+  RECURRENT = "recurrent",
 }
 
-export interface OfferPlate {
-  id: string;
-  name: string;
-  clientId?: string;
-  agentId: string;
-  status: string;
-  createdAt: string;
-  items?: CartItem[];
+export enum OfferCategory {
+  SITE_VITRINE = "site_vitrine",
+  SITE_E_COMMERCE = "site_e_commerce",
+  SEO = "seo",
+  SEA = "sea",
+  DESIGN_GRAPHIQUE = "design_graphique",
+  BRANDING = "branding",
+  AUTRE = "autre",
 }
 
-export interface Folder {
-  id: string;
-  name: string;
-  clientId: string;
-  agentId: string;
-  createdAt: string;
-  client?: User;
-  agent?: User;
-  offerPlates?: OfferPlate[];
-  quotes?: Quote[];
-}
-
-export interface Quote {
-  id: string;
-  offerPlateId: string;
-  clientId?: string;
-  agentId: string;
-  totalAmount: number;
-  status: string;
-  paymentStatus: string;  // Added for payment status
-  createdAt: string;
-  client?: User;
-  agent?: User;
-  offerPlate?: OfferPlate;
-  items?: CartItem[];
-  paymentInfo?: PaymentInfo;
-}
-
-export interface PaymentInfo {
-  id: string;
-  quoteId: string;
-  bankName: string;
-  iban: string;
-  bic: string;
-  createdAt: string;
-}
-
-export interface LineItemType {
-  offre: string;
-  description: string;
-  prix: number;
-  quantite: number;
-  montant: number;
-}
-
+// Ajout des types pour les campagnes et leads CRM
 export interface Campaign {
   id: string;
   name: string;
@@ -115,12 +64,10 @@ export interface Campaign {
   startDate?: string;
   endDate?: string;
   objectives?: string;
-  status: string;
+  status: 'preparation' | 'active' | 'completed' | 'cancelled';
   createdAt: string;
   updatedAt: string;
   createdBy: string;
-  leadsCount?: number;
-  assignedLeadsCount?: number;
 }
 
 export interface Lead {
@@ -132,23 +79,10 @@ export interface Lead {
   phone?: string;
   company?: string;
   position?: string;
-  status: string;
+  status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost';
   createdAt: string;
   updatedAt: string;
-  tasks?: LeadTask[];
-  notes?: LeadNote[];
-  assignedTo?: User;
-}
-
-export interface LeadAssignment {
-  id: string;
-  leadId: string;
-  agentId: string;
-  assignedAt: string;
-  status: string;
-  createdBy: string;
-  agent?: User;
-  lead?: Lead;
+  assignedTo?: User | null;
 }
 
 export interface LeadTask {
@@ -157,7 +91,7 @@ export interface LeadTask {
   agentId: string;
   title: string;
   description?: string;
-  status: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
   dueDate?: string;
   createdAt: string;
   updatedAt: string;
@@ -172,14 +106,11 @@ export interface LeadNote {
   agent?: User;
 }
 
-export interface Report {
+export interface LeadAssignment {
   id: string;
-  name: string;
-  type: string;
-  campaignId?: string;
-  agentId?: string;
-  parameters?: any;
-  createdAt: string;
-  generatedAt?: string;
-  data?: any;
+  leadId: string;
+  agentId: string;
+  assignedAt: string;
+  status: 'active' | 'reassigned' | 'completed';
+  createdBy: string;
 }
