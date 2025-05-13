@@ -15,17 +15,17 @@ interface CreateLeadDialogProps {
   onSubmit: (lead: Partial<Lead>) => void;
 }
 
-const formSchema = z.object({
+const leadFormSchema = z.object({
   firstName: z.string().min(1, "Le prénom est obligatoire"),
   lastName: z.string().min(1, "Le nom est obligatoire"),
   email: z.string().email("L'email est invalide").optional().or(z.literal('')),
   phone: z.string().optional(),
   company: z.string().optional(),
   position: z.string().optional(),
-  status: z.enum(['new', 'contacted', 'qualified', 'converted', 'lost'])
+  status: z.enum(['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'])
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof leadFormSchema>;
 
 const CreateLeadDialog: React.FC<CreateLeadDialogProps> = ({ 
   open, 
@@ -33,7 +33,7 @@ const CreateLeadDialog: React.FC<CreateLeadDialogProps> = ({
   onSubmit 
 }) => {
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(leadFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -176,7 +176,9 @@ const CreateLeadDialog: React.FC<CreateLeadDialogProps> = ({
                       <SelectItem value="new">Nouveau</SelectItem>
                       <SelectItem value="contacted">Contacté</SelectItem>
                       <SelectItem value="qualified">Qualifié</SelectItem>
-                      <SelectItem value="converted">Converti</SelectItem>
+                      <SelectItem value="proposal">Proposition</SelectItem>
+                      <SelectItem value="negotiation">Négociation</SelectItem>
+                      <SelectItem value="won">Gagné</SelectItem>
                       <SelectItem value="lost">Perdu</SelectItem>
                     </SelectContent>
                   </Select>

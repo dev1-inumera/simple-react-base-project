@@ -23,16 +23,16 @@ interface EditCampaignDialogProps {
   onSubmit: (campaign: Partial<Campaign>) => void;
 }
 
-const formSchema = z.object({
+const campaignFormSchema = z.object({
   name: z.string().min(1, "Le nom est obligatoire"),
   description: z.string().optional(),
-  startDate: z.date().optional().nullable(),
-  endDate: z.date().optional().nullable(),
   objectives: z.string().optional(),
-  status: z.enum(['preparation', 'active', 'suspended', 'completed'])
+  startDate: z.date(),
+  endDate: z.date(),
+  status: z.enum(["preparation", "active", "completed", "cancelled"])
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof campaignFormSchema>;
 
 const EditCampaignDialog: React.FC<EditCampaignDialogProps> = ({ 
   open, 
@@ -41,7 +41,7 @@ const EditCampaignDialog: React.FC<EditCampaignDialogProps> = ({
   onSubmit 
 }) => {
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(campaignFormSchema),
     defaultValues: {
       name: campaign.name,
       description: campaign.description || '',
@@ -217,8 +217,8 @@ const EditCampaignDialog: React.FC<EditCampaignDialogProps> = ({
                     <SelectContent>
                       <SelectItem value="preparation">En préparation</SelectItem>
                       <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="suspended">Suspendue</SelectItem>
                       <SelectItem value="completed">Terminée</SelectItem>
+                      <SelectItem value="cancelled">Annulée</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

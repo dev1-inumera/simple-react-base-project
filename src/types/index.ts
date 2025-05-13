@@ -1,9 +1,8 @@
-
 export enum UserRole {
-  ADMIN = "admin",
-  AGENT = "agent",
   CLIENT = "client",
-  RESPONSABLE_PLATEAU = "responsable_plateau",
+  AGENT = "agent",
+  ADMIN = "admin",
+  RESPONSABLE_PLATEAU = "responsable_plateau"
 }
 
 export interface User {
@@ -11,140 +10,101 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  phone?: string;
-  address?: string;
-  birthDate?: string;
   role: UserRole;
+  phone?: string;
+  company?: string;
+  position?: string;
   createdAt: string;
-  businessSector?: string;
-  companyName?: string;
-  managerName?: string;
-  companyRole?: string | null;
+  updatedAt: string;
 }
 
-export interface CartItem {
-  id?: string;
-  offerId: string;
-  quantity: number;
-  userId: string;
-  offer: Offer;
-  selectedExtras?: Record<string, number>; // Add this for cart items
-}
-
-export interface Offer {
+export interface Client {
   id: string;
   name: string;
-  description: string;
-  price: number;
-  type: OfferType;
-  category: OfferCategory;
-  imageUrl?: string;
-  monthlyPayment: number;
-  creationCost: number;
-  priceMonthly?: number;  // Added for compatibility
-  setupFee?: number;      // Added for compatibility
-  extras?: OfferExtra[];  // Added for compatibility
+  email: string;
+  phone: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface OfferExtra {
-  id: string;
-  name: string;
-  description?: string;
-  unitPrice: number;
-  offerId: string;
-}
-
-export enum OfferType {
-  SIMPLE = "simple",
-  RECURRENT = "recurrent",
-}
-
-export enum OfferCategory {
-  SITE_VITRINE = "site_vitrine",
-  SITE_E_COMMERCE = "site_e_commerce",
-  SEO = "seo",
-  SEA = "sea",
-  DESIGN_GRAPHIQUE = "design_graphique",
-  BRANDING = "branding",
-  AUTRE = "autre",
-}
-
-// Add types for folders, offer plates, and quotes
 export interface Folder {
   id: string;
-  clientId: string;
-  agentId: string;
   name: string;
+  client_id: string;
+  description?: string;
+  status?: string;
   createdAt: string;
-  updatedAt?: string;
-  quoteId?: string;
+  updatedAt: string;
 }
 
 export interface OfferPlate {
   id: string;
-  name: string;
-  agentId: string;
-  clientId?: string;
-  folderId?: string;
+  title: string;
+  description?: string;
+  folder_id: string;
   status: string;
+  total?: number;
   createdAt: string;
-  updatedAt?: string;
-  sentAt?: string;
-  sentMethod?: string;
+  updatedAt: string;
 }
 
 export interface Quote {
   id: string;
-  agentId: string;
-  clientId?: string;
-  offerPlateId: string;
+  title: string;
+  description?: string;
+  folder_id?: string;
+  offer_plate_id?: string;
   status: string;
-  paymentStatus: string;
-  totalAmount: number;
+  total: number;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
 }
 
-// Campaign types
+export interface CartItem {
+  offerPlateId: string;
+  quantity: number;
+}
+
+export interface Payment {
+  id: string;
+  userId: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
 export interface Campaign {
   id: string;
   name: string;
   description?: string;
-  startDate?: string;
-  endDate?: string;
   objectives?: string;
-  status: 'preparation' | 'active' | 'completed' | 'cancelled';
+  startDate: string;
+  endDate: string;
+  status: string;
   createdAt: string;
   updatedAt: string;
-  createdBy: string;
 }
 
 export interface Lead {
   id: string;
-  campaignId: string;
   firstName: string;
   lastName: string;
   email?: string;
   phone?: string;
   company?: string;
   position?: string;
-  status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost';
+  status: string;
+  campaignId: string;
   createdAt: string;
   updatedAt: string;
-  assignedTo?: Partial<User> | null;
-}
-
-export interface LeadTask {
-  id: string;
-  leadId: string;
-  agentId: string;
-  title: string;
-  description?: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  dueDate?: string;
-  due_date?: string; // For backward compatibility
-  createdAt: string;
-  updatedAt: string;
+  assignedTo?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: UserRole;
+  };
 }
 
 export interface LeadNote {
@@ -153,14 +113,16 @@ export interface LeadNote {
   agentId: string;
   content: string;
   createdAt: string;
-  agent?: User;
 }
 
-export interface LeadAssignment {
+export interface LeadTask {
   id: string;
   leadId: string;
   agentId: string;
-  assignedAt: string;
-  status: 'active' | 'reassigned' | 'completed';
-  createdBy: string;
+  title: string;
+  description?: string;
+  dueDate?: string;
+  due_date?: string;
+  status: string;
+  createdAt: string;
 }

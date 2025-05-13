@@ -798,6 +798,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({
                           onSelect={field.onChange}
                           initialFocus
                           locale={fr}
+                          className="pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
