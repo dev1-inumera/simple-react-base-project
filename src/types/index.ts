@@ -1,7 +1,9 @@
+
 export enum UserRole {
   CLIENT = "client",
   AGENT = "agent",
-  ADMIN = "admin"
+  ADMIN = "admin",
+  RESPONSABLE_PLATEAU = "responsable_plateau"
 }
 
 export interface User {
@@ -104,4 +106,80 @@ export interface LineItemType {
   prix: number;
   quantite: number;
   montant: number;
+}
+
+export interface Campaign {
+  id: string;
+  name: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  objectives?: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  leadsCount?: number;
+  assignedLeadsCount?: number;
+}
+
+export interface Lead {
+  id: string;
+  campaignId: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  position?: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  tasks?: LeadTask[];
+  notes?: LeadNote[];
+  assignedTo?: User;
+}
+
+export interface LeadAssignment {
+  id: string;
+  leadId: string;
+  agentId: string;
+  assignedAt: string;
+  status: string;
+  createdBy: string;
+  agent?: User;
+  lead?: Lead;
+}
+
+export interface LeadTask {
+  id: string;
+  leadId: string;
+  agentId: string;
+  title: string;
+  description?: string;
+  status: string;
+  dueDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LeadNote {
+  id: string;
+  leadId: string;
+  agentId: string;
+  content: string;
+  createdAt: string;
+  agent?: User;
+}
+
+export interface Report {
+  id: string;
+  name: string;
+  type: string;
+  campaignId?: string;
+  agentId?: string;
+  parameters?: any;
+  createdAt: string;
+  generatedAt?: string;
+  data?: any;
 }

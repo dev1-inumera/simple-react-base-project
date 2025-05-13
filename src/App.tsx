@@ -26,6 +26,11 @@ import ClientOptSignup from '@/pages/Client/OptSignup';
 import MailSend from '@/pages/Dev/MailSend';
 import { UserRole } from '@/types';
 
+// Nouvelles pages pour le CRM
+import CampaignsPage from '@/pages/Campaigns';
+import CampaignDetailPage from '@/pages/Campaigns/CampaignDetailPage';
+import LeadDetailPage from '@/pages/Leads/LeadDetailPage';
+
 import './App.css';
 
 function App() {
@@ -122,6 +127,38 @@ function App() {
             <ProtectedRoute>
               <MainLayout>
                 <Settings />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Routes CRM */}
+        <Route
+          path="/campaigns"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU]}>
+              <MainLayout>
+                <CampaignsPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/campaigns/:id"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU]}>
+              <MainLayout>
+                <CampaignDetailPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leads/:id"
+          element={
+            <ProtectedRoute allowedRoles={[UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU]}>
+              <MainLayout>
+                <LeadDetailPage />
               </MainLayout>
             </ProtectedRoute>
           }

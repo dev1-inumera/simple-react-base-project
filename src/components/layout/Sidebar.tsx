@@ -28,7 +28,9 @@ import {
   Settings,
   LogOut,
   Mail,
-  BarChart2
+  BarChart2,
+  MessageSquare,
+  Flag
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,7 +57,7 @@ export const AppSidebar: React.FC = () => {
         title: "Tableau de bord",
         path: "/dashboard",
         icon: LayoutDashboard,
-        roles: [UserRole.CLIENT, UserRole.AGENT, UserRole.ADMIN],
+        roles: [UserRole.CLIENT, UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU],
       },
       {
         title: "Marketplace",
@@ -85,7 +87,13 @@ export const AppSidebar: React.FC = () => {
         title: "Clients",
         path: "/clients",
         icon: Users,
-        roles: [UserRole.AGENT, UserRole.ADMIN],
+        roles: [UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU],
+      },
+      {
+        title: "Campagnes",
+        path: "/campaigns",
+        icon: Flag,
+        roles: [UserRole.AGENT, UserRole.ADMIN, UserRole.RESPONSABLE_PLATEAU],
       },
     ];
 
@@ -94,6 +102,12 @@ export const AppSidebar: React.FC = () => {
       items.push({
         title: "Statistiques Emails",
         path: "/admin/email-stats",
+        icon: BarChart2,
+        roles: [UserRole.ADMIN],
+      });
+      items.push({
+        title: "Historique Paiements",
+        path: "/admin/payment-history",
         icon: BarChart2,
         roles: [UserRole.ADMIN],
       });
