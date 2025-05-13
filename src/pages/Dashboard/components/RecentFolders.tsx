@@ -7,13 +7,13 @@ import FolderCard from '@/pages/Folders/components/FolderCard';
 
 interface RecentFoldersProps {
   folders: Folder[];
-  isLoading?: boolean;
+  loading?: boolean;
 }
 
-const RecentFolders: React.FC<RecentFoldersProps> = ({ folders, isLoading }) => {
+const RecentFolders: React.FC<RecentFoldersProps> = ({ folders, loading }) => {
   const navigate = useNavigate();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Card>
         <CardHeader>

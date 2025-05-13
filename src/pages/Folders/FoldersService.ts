@@ -2,6 +2,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Folder, OfferPlate, Quote } from '@/types';
 
+// Create a new folder
+export const createFolder = async (
+  name: string, 
+  clientId: string, 
+  agentId: string
+): Promise<Folder> => {
+  const { data, error } = await supabase
+    .from('folders')
+    .insert({
+      name,
+      client_id: clientId,
+      agent_id: agentId
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  
+  return mapFolder(data);
+};
+
 // Get user folders
 export const fetchUserFolders = async (userId: string): Promise<Folder[]> => {
   const { data, error } = await supabase

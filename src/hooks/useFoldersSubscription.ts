@@ -25,7 +25,19 @@ export const useFoldersSubscription = (userId?: string) => {
           .or(`agent_id.eq.${userId},client_id.eq.${userId}`);
 
         if (error) throw error;
-        setFolders(data || []);
+        
+        // Map the data to the Folder type
+        const mappedFolders: Folder[] = (data || []).map(folder => ({
+          id: folder.id,
+          name: folder.name,
+          clientId: folder.client_id,
+          agentId: folder.agent_id,
+          createdAt: folder.created_at,
+          updatedAt: folder.updated_at,
+          quoteId: folder.quote_id
+        }));
+        
+        setFolders(mappedFolders);
       } catch (error) {
         console.error('Error fetching folders:', error);
       } finally {
