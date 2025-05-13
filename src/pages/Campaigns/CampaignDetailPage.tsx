@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -256,8 +255,10 @@ const CampaignDetailPage: React.FC = () => {
               Campagnes
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink>{campaign.name}</BreadcrumbLink>
+          <BreadcrumbItem>
+            <BreadcrumbLink>
+              {campaign.name}
+            </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
         
@@ -497,7 +498,7 @@ const CampaignDetailPage: React.FC = () => {
                                 <DropdownMenuItem 
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setSelectedLead(lead);
+                                    setSelectedLead(lead as Lead);
                                     setIsAssignLeadDialogOpen(true);
                                   }}
                                 >
@@ -627,7 +628,7 @@ const CampaignDetailPage: React.FC = () => {
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setSelectedLead(lead);
+                                  setSelectedLead(lead as Lead);
                                   setIsAssignLeadDialogOpen(true);
                                 }}
                               >

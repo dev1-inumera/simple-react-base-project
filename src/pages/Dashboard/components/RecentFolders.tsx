@@ -1,52 +1,63 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Folder } from '@/types';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import FolderCard from '@/pages/Folders/components/FolderCard';
 
 interface RecentFoldersProps {
   folders: Folder[];
-  loading: boolean;
+  isLoading?: boolean;
 }
 
-export const RecentFolders: React.FC<RecentFoldersProps> = ({ folders, loading }) => {
+const RecentFolders: React.FC<RecentFoldersProps> = ({ folders, isLoading }) => {
   const navigate = useNavigate();
-  const displayedFolders = folders.slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Dossiers récents</CardTitle>
+          <CardDescription>Vos derniers dossiers clients</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-24 bg-muted rounded-md"></div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Derniers dossiers</h2>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => navigate('/folders')}
-        >
-          Voir tout
-        </Button>
-      </div>
-      
-      {loading ? (
-        <div className="space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-12 bg-muted animate-pulse rounded"></div>
-          ))}
-        </div>
-      ) : displayedFolders.length > 0 ? (
-        displayedFolders.map((folder) => (
-          <div key={folder.id} className="mb-2 p-2 hover:bg-gray-50 rounded">
-            <p className="font-medium">{folder.name}</p>
-            <p className="text-sm text-muted-foreground">
-              Créé {formatDistanceToNow(new Date(folder.createdAt), { addSuffix: true, locale: fr })}
-            </p>
+    <Card>
+      <CardHeader>
+        <CardTitle>Dossiers récents</CardTitle>
+        <CardDescription>Vos derniers dossiers clients</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {folders.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4">
+            {folders.slice(0, 3).map((folder) => (
+              <FolderCard
+                key={folder.id}
+                folder={folder}
+                onClick={() => navigate(`/folders/${folder.id}`)}
+              />
+            ))}
           </div>
-        ))
-      ) : (
-        <p className="text-muted-foreground">Aucun dossier récent</p>
-      )}
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Aucun dossier récent
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };
+
+export default RecentFolders;

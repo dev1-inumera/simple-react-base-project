@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -92,19 +91,23 @@ const LeadDetailPage: React.FC = () => {
       
       const leadData = mapLead(data);
       
+      // Safely handle the agent data
+      const assignedToData = data.lead_assignments && 
+                             data.lead_assignments.length > 0 && 
+                             data.lead_assignments[0].agent ? 
+        {
+          id: data.lead_assignments[0].agent.id,
+          firstName: data.lead_assignments[0].agent.first_name,
+          lastName: data.lead_assignments[0].agent.last_name,
+          email: data.lead_assignments[0].agent.email,
+          role: data.lead_assignments[0].agent.role
+        } : undefined;
+      
       return {
         ...leadData,
         campaignId: data.campaign_id,
         campaignName: data.campaign?.name,
-        assignedTo: data.lead_assignments?.length > 0
-          ? {
-              id: data.lead_assignments[0].agent.id,
-              firstName: data.lead_assignments[0].agent.first_name,
-              lastName: data.lead_assignments[0].agent.last_name,
-              email: data.lead_assignments[0].agent.email,
-              role: data.lead_assignments[0].agent.role
-            }
-          : undefined
+        assignedTo: assignedToData
       };
     },
     enabled: !!id
@@ -299,7 +302,7 @@ const LeadDetailPage: React.FC = () => {
               {lead.campaignName || 'Campagne'}
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
+          <BreadcrumbItem>
             <BreadcrumbLink>
               {lead.firstName} {lead.lastName}
             </BreadcrumbLink>
@@ -446,7 +449,7 @@ const LeadDetailPage: React.FC = () => {
                             <span className="block truncate">{task.title}</span>
                             {task.dueDate && (
                               <span className="text-xs text-muted-foreground">
-                                Échéance: {format(new Date(task.dueDate), "d MMM", { locale: fr })}
+                                Échéance: {format(new Date(task.dueDate || task.due_date), "d MMM", { locale: fr })}
                               </span>
                             )}
                           </div>
@@ -860,7 +863,7 @@ const leadFormSchema = z.object({
   phone: z.string().optional(),
   company: z.string().optional(),
   position: z.string().optional(),
-  status: z.string()
+  status: z.enum(['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'])
 });
 
 type LeadFormValues = z.infer<typeof leadFormSchema>;
@@ -912,133 +915,3 @@ const EditLeadDialog: React.FC<EditLeadDialogProps> = ({
               <FormField
                 control={form.control}
                 name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prénom</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nom</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Téléphone</FormLabel>
-                  <FormControl>
-                    <Input {...field} value={field.value || ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="company"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Entreprise</FormLabel>
-                    <FormControl>
-                      <Input {...field} value={field.value || ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="position"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Poste</FormLabel>
-                    <FormControl>
-                      <Input {...field} value={field.value || ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Statut</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner un statut" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="new">Nouveau</SelectItem>
-                      <SelectItem value="contacted">Contacté</SelectItem>
-                      <SelectItem value="qualified">Qualifié</SelectItem>
-                      <SelectItem value="converted">Converti</SelectItem>
-                      <SelectItem value="lost">Perdu</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-              >
-                Annuler
-              </Button>
-              <Button type="submit">Enregistrer</Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-export default LeadDetailPage;

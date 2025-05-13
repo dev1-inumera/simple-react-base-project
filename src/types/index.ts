@@ -1,3 +1,4 @@
+
 export enum UserRole {
   ADMIN = "admin",
   AGENT = "agent",
@@ -27,6 +28,7 @@ export interface CartItem {
   quantity: number;
   userId: string;
   offer: Offer;
+  selectedExtras?: Record<string, number>; // Add this for cart items
 }
 
 export interface Offer {
@@ -39,6 +41,17 @@ export interface Offer {
   imageUrl?: string;
   monthlyPayment: number;
   creationCost: number;
+  priceMonthly?: number;  // Added for compatibility
+  setupFee?: number;      // Added for compatibility
+  extras?: OfferExtra[];  // Added for compatibility
+}
+
+export interface OfferExtra {
+  id: string;
+  name: string;
+  description?: string;
+  unitPrice: number;
+  offerId: string;
 }
 
 export enum OfferType {
@@ -56,7 +69,43 @@ export enum OfferCategory {
   AUTRE = "autre",
 }
 
-// Ajout des types pour les campagnes et leads CRM
+// Add types for folders, offer plates, and quotes
+export interface Folder {
+  id: string;
+  clientId: string;
+  agentId: string;
+  name: string;
+  createdAt: string;
+  updatedAt?: string;
+  quoteId?: string;
+}
+
+export interface OfferPlate {
+  id: string;
+  name: string;
+  agentId: string;
+  clientId?: string;
+  folderId?: string;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
+  sentAt?: string;
+  sentMethod?: string;
+}
+
+export interface Quote {
+  id: string;
+  agentId: string;
+  clientId?: string;
+  offerPlateId: string;
+  status: string;
+  paymentStatus: string;
+  totalAmount: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// Campaign types
 export interface Campaign {
   id: string;
   name: string;
@@ -82,7 +131,7 @@ export interface Lead {
   status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost';
   createdAt: string;
   updatedAt: string;
-  assignedTo?: User | null;
+  assignedTo?: Partial<User> | null;
 }
 
 export interface LeadTask {
@@ -93,6 +142,7 @@ export interface LeadTask {
   description?: string;
   status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
   dueDate?: string;
+  due_date?: string; // For backward compatibility
   createdAt: string;
   updatedAt: string;
 }

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,7 @@ const formSchema = z.object({
   phone: z.string().optional(),
   company: z.string().optional(),
   position: z.string().optional(),
-  status: z.string().default("new")
+  status: z.enum(['new', 'contacted', 'qualified', 'converted', 'lost'])
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,7 +41,7 @@ const CreateLeadDialog: React.FC<CreateLeadDialogProps> = ({
       phone: "",
       company: "",
       position: "",
-      status: "new"
+      status: "new" as const
     }
   });
 

@@ -40,11 +40,20 @@ const CartItemRow: React.FC<CartItemRowProps> = ({ item, onUpdate }) => {
     }
   };
 
-  const extrasCount = Object.values(item.selectedExtras || {}).reduce((sum, quantity) => sum + quantity, 0);
-  const extrasTotal = Object.entries(item.selectedExtras || {}).reduce((sum, [extraId, quantity]) => {
-    const extra = item.offer.extras?.find(e => e.id === extraId);
-    return sum + (extra ? extra.unitPrice * quantity : 0);
-  }, 0);
+  // Safely handle extras calculations
+  const extrasCount = item.selectedExtras 
+    ? Object.values(item.selectedExtras).reduce((sum, quantity) => sum + (quantity || 0), 0)
+    : 0;
+    
+  const extrasTotal = item.selectedExtras && item.offer.extras
+    ? Object.entries(item.selectedExtras).reduce((sum, [extraId, quantity]) => {
+        const extra = item.offer.extras?.find(e => e.id === extraId);
+        return sum + (extra ? extra.unitPrice * (quantity || 0) : 0);
+      }, 0)
+    : 0;
+
+  const setupFeeDisplay = item.offer.setupFee || item.offer.creationCost || 0;
+  const priceMonthlyDisplay = item.offer.priceMonthly || item.offer.monthlyPayment || 0;
 
   return (
     <>
@@ -52,10 +61,10 @@ const CartItemRow: React.FC<CartItemRowProps> = ({ item, onUpdate }) => {
         <TableCell className="font-medium">{item.offer.name}</TableCell>
         <TableCell>{item.offer.description}</TableCell>
         <TableCell className="text-right">
-          {item.offer.setupFee > 0 ? `${Number(item.offer.setupFee).toFixed(2)}€` : "-"}
+          {setupFeeDisplay > 0 ? `${Number(setupFeeDisplay).toFixed(2)}€` : "-"}
         </TableCell>
         <TableCell className="text-right">
-          {item.offer.priceMonthly > 0 ? `${Number(item.offer.priceMonthly).toFixed(2)}€` : "-"}
+          {priceMonthlyDisplay > 0 ? `${Number(priceMonthlyDisplay).toFixed(2)}€` : "-"}
         </TableCell>
         <TableCell className="text-right">
           {extrasCount > 0 ? (
@@ -68,7 +77,7 @@ const CartItemRow: React.FC<CartItemRowProps> = ({ item, onUpdate }) => {
               {extrasCount} extras ({extrasTotal.toFixed(2)}€)
               <Plus className="ml-2 h-4 w-4" />
             </Button>
-          ) : item.offer.extras?.length ? (
+          ) : item.offer.extras && item.offer.extras.length ? (
             <Button
               variant="ghost"
               size="sm"

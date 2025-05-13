@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,7 @@ const formSchema = z.object({
   startDate: z.date().optional().nullable(),
   endDate: z.date().optional().nullable(),
   objectives: z.string().optional(),
-  status: z.string()
+  status: z.enum(['preparation', 'active', 'suspended', 'completed'])
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -49,7 +48,7 @@ const EditCampaignDialog: React.FC<EditCampaignDialogProps> = ({
       startDate: campaign.startDate ? new Date(campaign.startDate) : null,
       endDate: campaign.endDate ? new Date(campaign.endDate) : null,
       objectives: campaign.objectives || '',
-      status: campaign.status
+      status: campaign.status as any // Cast to any to avoid type error
     }
   });
 

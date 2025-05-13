@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,7 @@ const formSchema = z.object({
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   objectives: z.string().optional(),
-  status: z.string().default("preparation")
+  status: z.enum(['preparation', 'active', 'suspended', 'completed'])
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -45,7 +44,7 @@ const CreateCampaignDialog: React.FC<CreateCampaignDialogProps> = ({
       name: "",
       description: "",
       objectives: "",
-      status: "preparation"
+      status: "preparation" as const
     }
   });
 
