@@ -1,12 +1,12 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/auth";
 import { PendingQuotes } from "./components/PendingQuotes";
 import { RecentActivityList } from "./components/RecentActivity";
 import { DashboardHeader } from "./components/DashboardHeader";
-import RecentFolders from "./components/RecentFolders";
+import { RecentFolders } from "./components/RecentFolders";
 import { useFoldersSubscription } from "@/hooks/useFoldersSubscription";
 import { CampaignEmailStats } from "@/components/dashboard/CampaignEmailStats";
 

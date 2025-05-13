@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -15,28 +16,28 @@ const CartPage: React.FC = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
   
-  // State and fetch cart items
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [createdOfferPlateId, setCreatedOfferPlateId] = useState<string | null>(null);
 
-  const loadCartItems = useCallback(async () => {
+  const loadCartItems = async () => {
     if (!auth.user) return;
     
     try {
-      setIsLoading(true);
+      setLoading(true);
       const items = await fetchCartItems(auth.user.id);
-      setCartItems(items as CartItem[]);
+      setCartItems(items);
     } catch (error: any) {
-      console.error("Error fetching cart items:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de charger votre panier.",
+        title: "Erreur de chargement",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  }, [auth.user, toast]);
+  };
 
   useEffect(() => {
     loadCartItems();
@@ -58,7 +59,7 @@ const CartPage: React.FC = () => {
           <CardTitle>Articles sélectionnés</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
+          {loading ? (
             <div className="h-36 bg-muted animate-pulse rounded-md" />
           ) : cartItems.length > 0 ? (
             <Table>

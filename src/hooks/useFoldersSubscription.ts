@@ -1,84 +1,48 @@
 
-import { useEffect, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 import { Folder } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { fetchFolders } from '@/pages/Folders/FoldersService';
 
-/**
- * Hook to subscribe to real-time folder changes in Supabase
- */
-export const useFoldersSubscription = (userId?: string) => {
-  const queryClient = useQueryClient();
+export const useFoldersSubscription = (userId: string) => {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch folders
   useEffect(() => {
-    if (!userId) return;
-
-    const fetchFolders = async () => {
-      setLoading(true);
+    const loadFolders = async () => {
       try {
-        const { data, error } = await supabase
-          .from('folders')
-          .select('*')
-          .or(`agent_id.eq.${userId},client_id.eq.${userId}`);
-
-        if (error) throw error;
-        
-        // Map the data to the Folder type
-        const mappedFolders: Folder[] = (data || []).map(folder => ({
-          id: folder.id,
-          name: folder.name,
-          clientId: folder.client_id,
-          agentId: folder.agent_id,
-          createdAt: folder.created_at,
-          updatedAt: folder.updated_at,
-          quoteId: folder.quote_id
-        }));
-        
-        setFolders(mappedFolders);
+        setLoading(true);
+        const data = await fetchFolders(userId, false);
+        setFolders(data);
       } catch (error) {
-        console.error('Error fetching folders:', error);
+        console.error("Error loading folders:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFolders();
+    loadFolders();
 
-    // Subscribe to changes on folders for this user (as agent or client)
-    const folderChannel = supabase
+    const channel = supabase
       .channel('folders-changes')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'folders',
-        filter: `agent_id=eq.${userId}`
-      }, () => {
-        // Invalidate folders query to refresh data
-        queryClient.invalidateQueries({ queryKey: ['folders', userId] });
-        fetchFolders();
-      })
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'folders',
-        filter: `client_id=eq.${userId}`
-      }, () => {
-        // Invalidate folders query to refresh data
-        queryClient.invalidateQueries({ queryKey: ['folders', userId] });
-        fetchFolders();
-      })
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'folders',
+          filter: `client_id=eq.${userId}`
+        },
+        () => {
+          loadFolders();
+        }
+      )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(folderChannel);
+      supabase.removeChannel(channel);
     };
-  }, [userId, queryClient]);
+  }, [userId]);
 
   return { folders, loading };
 };
-
-// Also export as default for backward compatibility
-export default useFoldersSubscription;

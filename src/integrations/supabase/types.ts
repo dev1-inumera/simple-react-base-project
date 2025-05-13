@@ -9,78 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      campaigns: {
-        Row: {
-          created_at: string | null
-          created_by: string
-          description: string | null
-          end_date: string | null
-          id: string
-          name: string
-          objectives: string | null
-          start_date: string | null
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          created_by: string
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          name: string
-          objectives?: string | null
-          start_date?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          name?: string
-          objectives?: string | null
-          start_date?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      email_sequences: {
-        Row: {
-          created_at: string
-          description: string
-          id: string
-          image_url: string | null
-          title: string
-          updated_at: string
-          user_id: string
-          week_number: number
-        }
-        Insert: {
-          created_at?: string
-          description: string
-          id?: string
-          image_url?: string | null
-          title: string
-          updated_at?: string
-          user_id: string
-          week_number: number
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          id?: string
-          image_url?: string | null
-          title?: string
-          updated_at?: string
-          user_id?: string
-          week_number?: number
-        }
-        Relationships: []
-      }
       folders: {
         Row: {
           agent_id: string
@@ -115,167 +43,6 @@ export type Database = {
             columns: ["quote_id"]
             isOneToOne: true
             referencedRelation: "quotes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lead_assignments: {
-        Row: {
-          agent_id: string
-          assigned_at: string | null
-          created_by: string
-          id: string
-          lead_id: string
-          status: string
-        }
-        Insert: {
-          agent_id: string
-          assigned_at?: string | null
-          created_by: string
-          id?: string
-          lead_id: string
-          status?: string
-        }
-        Update: {
-          agent_id?: string
-          assigned_at?: string | null
-          created_by?: string
-          id?: string
-          lead_id?: string
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lead_assignments_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lead_notes: {
-        Row: {
-          agent_id: string
-          content: string
-          created_at: string | null
-          id: string
-          lead_id: string
-        }
-        Insert: {
-          agent_id: string
-          content: string
-          created_at?: string | null
-          id?: string
-          lead_id: string
-        }
-        Update: {
-          agent_id?: string
-          content?: string
-          created_at?: string | null
-          id?: string
-          lead_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lead_notes_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lead_tasks: {
-        Row: {
-          agent_id: string
-          created_at: string | null
-          description: string | null
-          due_date: string | null
-          id: string
-          lead_id: string
-          status: string
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          agent_id: string
-          created_at?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          lead_id: string
-          status?: string
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          agent_id?: string
-          created_at?: string | null
-          description?: string | null
-          due_date?: string | null
-          id?: string
-          lead_id?: string
-          status?: string
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lead_tasks_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      leads: {
-        Row: {
-          campaign_id: string
-          company: string | null
-          created_at: string | null
-          email: string | null
-          first_name: string
-          id: string
-          last_name: string
-          phone: string | null
-          position: string | null
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          campaign_id: string
-          company?: string | null
-          created_at?: string | null
-          email?: string | null
-          first_name: string
-          id?: string
-          last_name: string
-          phone?: string | null
-          position?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          campaign_id?: string
-          company?: string | null
-          created_at?: string | null
-          email?: string | null
-          first_name?: string
-          id?: string
-          last_name?: string
-          phone?: string | null
-          position?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "leads_campaign_id_fkey"
-            columns: ["campaign_id"]
-            isOneToOne: false
-            referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
         ]
@@ -612,7 +379,6 @@ export type Database = {
           last_name: string | null
           manager_name: string | null
           phone: string | null
-          profile_image: string | null
           role: Database["public"]["Enums"]["user_role"]
           theme: string | null
           timezone: string | null
@@ -633,7 +399,6 @@ export type Database = {
           last_name?: string | null
           manager_name?: string | null
           phone?: string | null
-          profile_image?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           theme?: string | null
           timezone?: string | null
@@ -654,7 +419,6 @@ export type Database = {
           last_name?: string | null
           manager_name?: string | null
           phone?: string | null
-          profile_image?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           theme?: string | null
           timezone?: string | null
@@ -706,94 +470,6 @@ export type Database = {
           },
         ]
       }
-      reports: {
-        Row: {
-          agent_id: string | null
-          campaign_id: string | null
-          created_at: string | null
-          data: Json | null
-          generated_at: string | null
-          id: string
-          name: string
-          parameters: Json | null
-          type: string
-        }
-        Insert: {
-          agent_id?: string | null
-          campaign_id?: string | null
-          created_at?: string | null
-          data?: Json | null
-          generated_at?: string | null
-          id?: string
-          name: string
-          parameters?: Json | null
-          type: string
-        }
-        Update: {
-          agent_id?: string | null
-          campaign_id?: string | null
-          created_at?: string | null
-          data?: Json | null
-          generated_at?: string | null
-          id?: string
-          name?: string
-          parameters?: Json | null
-          type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reports_campaign_id_fkey"
-            columns: ["campaign_id"]
-            isOneToOne: false
-            referencedRelation: "campaigns"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      surveys: {
-        Row: {
-          address: string | null
-          business_sector: string | null
-          client_id: string
-          created_at: string
-          email: string
-          first_name: string
-          id: string
-          last_name: string
-          phone: string | null
-        }
-        Insert: {
-          address?: string | null
-          business_sector?: string | null
-          client_id: string
-          created_at?: string
-          email: string
-          first_name: string
-          id?: string
-          last_name: string
-          phone?: string | null
-        }
-        Update: {
-          address?: string | null
-          business_sector?: string | null
-          client_id?: string
-          created_at?: string
-          email?: string
-          first_name?: string
-          id?: string
-          last_name?: string
-          phone?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "surveys_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
@@ -802,7 +478,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      user_role: "client" | "agent" | "admin" | "responsable_plateau"
+      user_role: "client" | "agent" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -918,7 +594,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["client", "agent", "admin", "responsable_plateau"],
+      user_role: ["client", "agent", "admin"],
     },
   },
 } as const

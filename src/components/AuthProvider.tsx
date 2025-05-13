@@ -1,11 +1,8 @@
-
 import React, { createContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthContext, AuthState } from "@/lib/auth";
 import { User, UserRole } from "@/types";
-
-// Importation directe de useToast depuis son fichier source
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   children 

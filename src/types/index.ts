@@ -1,128 +1,107 @@
 export enum UserRole {
   CLIENT = "client",
   AGENT = "agent",
-  ADMIN = "admin",
-  RESPONSABLE_PLATEAU = "responsable_plateau"
+  ADMIN = "admin"
 }
 
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
+  firstName?: string;
+  lastName?: string;
   phone?: string;
-  company?: string;
-  position?: string;
+  address?: string;
+  birthDate?: string;
+  role: UserRole;
   createdAt: string;
-  updatedAt: string;
+  businessSector?: string;
+  companyName?: string;
+  managerName?: string;
+  companyRole?: string;
 }
 
-export interface Client {
+export interface OfferExtra {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  address: string;
+  description?: string;
+  unitPrice: number;
+}
+
+export interface Offer {
+  id: string;
+  name: string;
+  description: string;
+  priceMonthly: number;
+  setupFee: number;
+  category: string;
+  imageUrl?: string;
+  isActive: boolean;
+  createdAt?: string;
+  features: string[];
+  extras?: OfferExtra[];
+  hasExtras?: boolean;  // Added for conditional display of extras button
+}
+
+export interface CartItem {
+  id?: string;
+  offerId: string;
+  offer: Offer;
+  quantity: number;
+  offerPlateId?: string;
+  selectedExtras?: Record<string, number>; // Added for selected extras
+}
+
+export interface OfferPlate {
+  id: string;
+  name: string;
+  clientId?: string;
+  agentId: string;
+  status: string;
   createdAt: string;
-  updatedAt: string;
+  items?: CartItem[];
 }
 
 export interface Folder {
   id: string;
   name: string;
-  client_id: string;
-  description?: string;
-  status?: string;
+  clientId: string;
+  agentId: string;
   createdAt: string;
-  updatedAt: string;
-}
-
-export interface OfferPlate {
-  id: string;
-  title: string;
-  description?: string;
-  folder_id: string;
-  status: string;
-  total?: number;
-  createdAt: string;
-  updatedAt: string;
+  client?: User;
+  agent?: User;
+  offerPlates?: OfferPlate[];
+  quotes?: Quote[];
 }
 
 export interface Quote {
   id: string;
-  title: string;
-  description?: string;
-  folder_id?: string;
-  offer_plate_id?: string;
-  status: string;
-  total: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CartItem {
   offerPlateId: string;
-  quantity: number;
-}
-
-export interface Payment {
-  id: string;
-  userId: string;
-  amount: number;
-  status: string;
-  createdAt: string;
-}
-
-export interface Campaign {
-  id: string;
-  name: string;
-  description?: string;
-  objectives?: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Lead {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-  position?: string;
-  status: string;
-  campaignId: string;
-  createdAt: string;
-  updatedAt: string;
-  assignedTo?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: UserRole;
-  };
-}
-
-export interface LeadNote {
-  id: string;
-  leadId: string;
+  clientId?: string;
   agentId: string;
-  content: string;
+  totalAmount: number;
+  status: string;
+  paymentStatus: string;  // Added for payment status
+  createdAt: string;
+  client?: User;
+  agent?: User;
+  offerPlate?: OfferPlate;
+  items?: CartItem[];
+  paymentInfo?: PaymentInfo;
+}
+
+export interface PaymentInfo {
+  id: string;
+  quoteId: string;
+  bankName: string;
+  iban: string;
+  bic: string;
   createdAt: string;
 }
 
-export interface LeadTask {
-  id: string;
-  leadId: string;
-  agentId: string;
-  title: string;
-  description?: string;
-  dueDate?: string;
-  due_date?: string;
-  status: string;
-  createdAt: string;
+export interface LineItemType {
+  offre: string;
+  description: string;
+  prix: number;
+  quantite: number;
+  montant: number;
 }
